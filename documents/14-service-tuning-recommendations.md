@@ -90,3 +90,10 @@ Verify the preset key spelling on athena's build (10129) before applying: `llama
 
 - 27B family was discarded (retention decision); no preset is proposed for it.
 - Verify the coder-14B, qwen-9B, gpt-oss-20b, gemma-12B promotions actually fit MI25 VRAM at their contexts after restart (watch `llama-server` logs for offload spill).
+
+
+## Version review 2026-08-26 (llama.cpp 0.3.0-dev rebuild)
+
+- Verified the tuned configs work unchanged on beast 10657 / athena 10643; aliases and `parallel = 4` intact.
+- New recommendation from the rebuild: `cache-reuse = 256` under `[*]` on both hosts (KV shifting reuse across requests; targets the 120B's slow prompt processing with repeated system prompts). Not yet applied. See `records/2026-08-26-05-version-review.md`.
+- `--parallel` default is now auto; the explicit `4` still applies.

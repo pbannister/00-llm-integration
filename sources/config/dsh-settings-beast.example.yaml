@@ -1,19 +1,21 @@
-# DeepSeek Harness `llm-pi-ai` provider section for the beast router.
+# DeepSeek Harness `llm-pi-ai` provider sections for the local routers.
 #
-# Target: ~/.dsh/settings.yaml — merge this section under the existing keys.
+# Target: ~/.dsh/settings.yaml — merge these sections under the existing keys.
 # The adapter re-reads the section per request; no restart is needed.
-# Credentials: store any non-empty value under BEAST_API_KEY via the DSH
-# Models settings (writes ~/.dsh/.credentials.yaml), or export it in the
-# dsh launch environment. llama.cpp ignores Authorization until the router
-# runs with --api-key; if that is added, use the same value here.
+# Credentials: store any non-empty value under BEAST_API_KEY (and ATHENA_API_KEY)
+# via the DSH Models settings (writes ~/.dsh/.credentials.yaml), or export them
+# in the dsh launch environment. llama.cpp ignores Authorization until a router
+# runs with --api-key; if that is added, use the same values here.
 #
-# Facts verified 2026-08-26 from dataflow.in/endpoints/beast-models.json.
-# contextWindow must match the preset ctx-size (or undershoot); maxTokens
-# sits well under it. Bare id-only entries inherit 262144/32768 defaults
-# that exceed every preset — do not use them.
+# Facts verified 2026-08-26 from dataflow.in/endpoints/ (after the llama.cpp
+# 0.3.0-dev rebuild and the applied tuning). Ids are the router ALIASES, which
+# now exist on the live routers. contextWindow matches each preset's ctx-size;
+# maxTokens sits well under it. Bare id-only entries inherit 262144/32768
+# defaults that exceed every preset — do not use them.
 #
-# If you prefer short ids, add `alias = <name>` lines to the beast preset
-# (/usr/local/etc/config.ini on beast) and use those names here instead.
+# The nomic-embed model (athena) is intentionally NOT listed here: it serves
+# /v1/embeddings on the router, and DSH is a chat/agent harness. Call
+# http://athena.lan:2001/v1/embeddings directly for RAG.
 
 llm-pi-ai:
   providers:
@@ -26,34 +28,75 @@ llm-pi-ai:
         supportsDeveloperRole: false
         maxTokensField: max_tokens
       models:
-        # --- Agent/editing (GPU-resident, fast) ---
-        - id: Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+        # --- GPU-resident (fast, interactive) ---
+        - id: coder32
           contextWindow: 16384
           maxTokens: 8192
-        - id: unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF:Q4_K_M
+        - id: coder14
+          contextWindow: 16384
+          maxTokens: 8192
+        - id: devstral
+          contextWindow: 32768
+          maxTokens: 8192
+        - id: qwen9
+          contextWindow: 32768
+          maxTokens: 8192
+        - id: gpt-oss-20b
+          contextWindow: 32768
+          maxTokens: 8192
+        - id: gemma-12b
           contextWindow: 32768
           maxTokens: 8192
         # --- Reasoning Q&A (GPU-resident) ---
-        - id: unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF:Q4_K_XL
+        - id: r1-14b
           contextWindow: 32768
           maxTokens: 8192
-        # --- Large context ---
-        - id: unsloth/gemma-4-26B-A4B-it-qat-GGUF:Q4_K_XL
+        # --- Large context (GPU-resident) ---
+        - id: gemma-26b
           contextWindow: 81920
           maxTokens: 16384
-        # --- Background CPU work (slow, keeps MI25 free) ---
-        - id: unsloth/gpt-oss-120b-GGUF:Q4_K_XL
+        # --- Background CPU work (slow; keeps the MI25 free) ---
+        - id: gpt-oss-120b
           contextWindow: 65536
           maxTokens: 16384
-        - id: unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF:Q4_K_XL
+        - id: r1-70b
           contextWindow: 32768
           maxTokens: 8192
-        - id: unsloth/Llama-3.3-70B-Instruct-GGUF:Q4_K_XL
+        - id: llama70
           contextWindow: 32768
+          maxTokens: 8192
+    athena:
+      displayName: Athena (llama.cpp)
+      apiKeyEnv: ATHENA_API_KEY
+      api: openai-completions
+      baseURL: http://athena.lan:2001/v1
+      compat:
+        supportsDeveloperRole: false
+        maxTokensField: max_tokens
+      models:
+        # --- GPU-resident small models (this desktop; lowest latency) ---
+        - id: coder15
+          contextWindow: 8192
+          maxTokens: 4096
+        - id: coder3
+          contextWindow: 8192
+          maxTokens: 4096
+        - id: llama3
+          contextWindow: 8192
+          maxTokens: 4096
+        - id: gemma-e4
+          contextWindow: 8192
+          maxTokens: 4096
+        # --- CPU fallback (beast offline) ---
+        - id: coder32-fallback
+          contextWindow: 16384
+          maxTokens: 8192
+        - id: r1-32b-fallback
+          contextWindow: 16384
           maxTokens: 8192
 
-# Switch the default agent model with the GUI model picker (leave
-# reasoning effort off for local models), or set:
+# Switch the default agent model with the GUI model picker (leave reasoning
+# effort off for local models), or set:
 # agent-default-model:
 #   provider: beast
-#   model: Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+#   model: coder32
