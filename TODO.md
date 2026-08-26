@@ -18,7 +18,7 @@ The owner's ordering decision (2026-08-26): sort the llama service config first,
 * [x] RAG — resolved 2026-08-26: embeddings preset enabled and verified (`/v1/embeddings` returns 768-dim via `nomic-embed`); purpose documented (`documents/13-mtp-and-rag.md`). Standing up Open WebUI RAG remains an optional future choice.
 * [x] `Host minerva.lan` block added to `~/.ssh/config` (key-athena); `ssh minerva.lan` verified 2026-08-26.
 * [x] Live config locations confirmed 2026-08-26: `/usr/local/etc/config.ini` on both hosts (edited, backed up, restarted this session); the imported `~/models/config-*.ini` copies are older snapshots (see `documents/12-model-retention.md`).
-* [ ] VS Code: disable/uninstall the Copilot extension (`ms-azuretools.vscode-azure-github-copilot` on athena) to finish the llama.vscode switch.
+* [x] VS Code: Copilot extension (`ms-azuretools.vscode-azure-github-copilot` 1.0.231) removed from athena 2026-08-26; llama.vscode switch complete.
 
 ## Recently Completed
 

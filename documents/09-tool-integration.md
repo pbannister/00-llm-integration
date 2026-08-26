@@ -57,7 +57,7 @@ The Chat view is tied to GitHub Copilot. Three options exist for local or OpenAI
 
 **Decision (2026-08-26): option 3.** The owner suppresses Copilot and uses llama.vscode; no Copilot plan is needed. Suppression steps:
 
-- Extensions panel: disable or uninstall the Copilot extensions. On athena the installed Copilot-related extension is `ms-azuretools.vscode-azure-github-copilot` (1.0.231; plus the standard `github.copilot` / `github.copilot-chat` if present). Not yet done as of 2026-08-26.
+- Extensions panel: disable or uninstall the Copilot extensions. On athena the installed Copilot-related extension was `ms-azuretools.vscode-azure-github-copilot` (1.0.231) — **removed 2026-08-26** (extension directory deleted; llama.vscode 0.0.63 unaffected). The standard `github.copilot` / `github.copilot-chat` were not present.
 - Per-workspace fallback: `"github.copilot.enabled": false` in `.vscode/settings.json` keeps the extensions installed but off.
 
 Do not run overlapping agent UIs on the same project simultaneously; pick one surface per task (DSH for agentic sessions, aider in the CLI, llama.vscode in the editor).
