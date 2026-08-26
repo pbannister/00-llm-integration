@@ -20,6 +20,7 @@ The LLM does not load these files as project rules.
 - `11-minerva-travel-plan.md` — the offline laptop plan (hardware verified 2026-08-26).
 - `12-model-retention.md` — model retention analysis (discard candidates, none discarded yet).
 - `13-mtp-and-rag.md` — MTP and RAG explainers with local support.
+- `14-service-tuning-recommendations.md` — draft llama.cpp preset tuning recommendations (task 01 output, not yet applied).
 
 ## Canonical Files
 
@@ -39,3 +40,4 @@ The following filenames are canonical and must not be renamed or duplicated with
 - `11-minerva-travel-plan.md`
 - `12-model-retention.md`
 - `13-mtp-and-rag.md`
+- `14-service-tuning-recommendations.md`

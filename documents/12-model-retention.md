@@ -5,7 +5,14 @@ Nothing is discarded without the owner's decision.
 The first model set was downloaded by interest, then benchmarked (see `sources/models/_combine-amd-rx-5500.md` and `sources/models/logs/`).
 GGUF files live in the HuggingFace cache on each host (`HF_HUB_CACHE=/home/preston/.cache/huggingface/hub` on beast; default cache on athena).
 
-Classes: keep (preset, has a role), keep-with-tuning (cache entry that should become a preset or serve a role), discard-candidate (redundant or roleless).
+## Discard executed 2026-08-26
+
+The owner approved the discard on 2026-08-26; the files below marked "Discard candidates" were deleted from the HuggingFace cache on beast and athena by `scripts/cache-discard.sh`.
+Backups exist at `/backups/huggingface/` on both hosts and are not managed by this project; a re-download is also possible if a model is needed later.
+Beast freed ~163 GB (28 → 13 models); athena freed ~306 GB (32 → 15 models). Services were restarted to rescan the caches.
+One incident during execution: the blob-cleanup step of the first script run deleted keeper quants (`gpt-oss-120b`/`gpt-oss-20b` UD-Q4_K_XL on beast) because `stat -c %i` did not dereference symlinks; the keepers were restored over LAN from athena before athena's own discard ran. See `records/2026-08-26-03-cache-discard.md`.
+
+Classes: keep (preset, has a role), keep-with-tuning (cache entry that should become a preset or serve a role), discard-candidate (redundant or roleless — deleted 2026-08-26).
 
 ## Beast (28 models)
 
@@ -32,7 +39,7 @@ Classes: keep (preset, has a role), keep-with-tuning (cache entry that should be
 | `unsloth/gemma-4-E2B-it-qat-GGUF:Q4_K_XL` | 2.43 GB | keep for minerva (travel) decision |
 | `unsloth/gemma-4-E4B-it-qat-GGUF:Q4_K_XL` | 3.91 GB | keep for minerva (travel) decision |
 
-### Discard candidates (redundant or roleless on beast)
+### Discard candidates (redundant or roleless on beast) — deleted 2026-08-26
 
 | Model id | reason |
 | ---- | ---- |
@@ -66,7 +73,7 @@ Classes: keep (preset, has a role), keep-with-tuning (cache entry that should be
 | `josephmayo/gemma-4-E4B-it-Coder-GGUF:Q5_K_M` | coding-tuned small model; candidate for athena completion |
 | `unsloth/Qwen3.5-2B-GGUF:Q4_K_M`, `unsloth/Qwen3.5-4B-GGUF:Q4_K_M` | keep for minerva (travel) decision |
 
-### Discard candidates (redundant or roleless on athena)
+### Discard candidates (redundant or roleless on athena) — deleted 2026-08-26
 
 The 70B/120B/27B and big GPU cache entries on athena run at ~1 t/s on the 5900X and duplicate beast presets:
 
@@ -75,6 +82,10 @@ The 70B/120B/27B and big GPU cache entries on athena run at ~1 t/s on the 5900X 
 - `bartowski/Mistral-Nemo-Instruct-2407-GGUF:Q4_K_M` — no role.
 - `unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF:Q4_K_XL`, `unsloth/Llama-3.2-1B-Instruct-GGUF:Q4_K_M`/`Q8_0` — no role.
 - `unsloth/Llama-3.2-3B-Instruct-GGUF:Q4_K_M` — the Q8 preset is the keeper.
+
+## Remaining cleanup candidates (not in the approved list)
+
+- on athena: `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M` and `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M` cache quants remain in repos whose Q8 presets are kept; and the unused `ggml-org/Qwen2.5-Coder-1.5B-Q8_0-GGUF` repo remains on disk. Owner to decide; no deletion performed.
 
 ## Benchmark reference
 

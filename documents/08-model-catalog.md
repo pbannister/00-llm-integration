@@ -23,9 +23,10 @@ The full lists live in the captures; this document records the curated entries t
 | `unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF:Q4_K_XL` | 32768 | deep reasoning on CPU |
 | `unsloth/Llama-3.3-70B-Instruct-GGUF:Q4_K_XL` | 32768 | general 70B chat on CPU |
 
-### Cache-only (no preset; CPU, ctx 32768)
+### Cache entries with roles (no preset yet, CPU, ctx 32768)
 
-Everything else on beast is a cache entry at `ctx 32768`, `ngl 0`, including the small coders (`Qwen2.5-Coder-1.5B/3B`), `Qwen3.5-9B/27B`, `gpt-oss-20b`, `gemma-4-E2B/E4B/12B`, `bartowski/Qwen3.8-27B`, and `Mistral-Nemo`. These serve at default speed; promote to a preset when a role is assigned.
+The remaining cache entries on beast are the keep-with-tuning candidates from `documents/12-model-retention.md`: `bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M`, `unsloth/Qwen3.5-9B-GGUF:Q4_K_M`, `unsloth/gemma-4-12B-it-qat-GGUF:Q4_K_XL`, `unsloth/gemma-4-E2B-it-qat-GGUF:Q4_K_XL`, `unsloth/gemma-4-E4B-it-qat-GGUF:Q4_K_XL`, and `unsloth/gpt-oss-20b-GGUF:Q4_K_XL`.
+Promote to presets when a role is assigned (see `documents/14-service-tuning-recommendations.md`).
 
 ## Athena (RX 5500 XT 8 GB GPU + Ryzen 9 5900X 128 GB CPU)
 
@@ -49,8 +50,11 @@ Everything else on beast is a cache entry at `ctx 32768`, `ngl 0`, including the
 
 | Model id | ctx | Role |
 | ---- | ---- | ---- |
-| `ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0` | 8192 | embeddings (RAG) |
+| `ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0` | 8192 | embeddings (RAG); needs an embeddings preset |
 | `josephmayo/gemma-4-E4B-it-Coder-GGUF:Q5_K_M` | 8192 | coding-tuned small model |
+| `unsloth/Qwen3.5-2B-GGUF:Q4_K_M`, `unsloth/Qwen3.5-4B-GGUF:Q4_K_M` | 8192 | minerva travel candidates |
+
+The athena cache also retains `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M` and `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M` cache quants in the repos whose Q8 presets are kept (remaining cleanup candidates; owner to decide).
 
 ## Notes
 

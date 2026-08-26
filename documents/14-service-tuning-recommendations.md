@@ -1,0 +1,92 @@
+# Service Tuning Recommendations — draft 2026-08-26
+
+Task 01 output. Recommended llama.cpp preset changes for beast and athena.
+Nothing here is applied to the live hosts until the owner reviews.
+Baseline: live `/usr/local/etc/config.ini` on each host, model facts from `documents/08-model-catalog.md` and `documents/12-model-retention.md`.
+
+## Beast
+
+### 1. `[*]` global section
+
+| Key | Current | Proposed | Why |
+| ---- | ---- | ---- | ---- |
+| `parallel` | unset (1) | `4` | DSH subagents and multiple clients currently serialize on one slot |
+| `ctx-size` | 32768 | keep | cache entries use it |
+
+### 2. Aliases (one per preset section)
+
+Add `alias = <name>` to each preset so clients use short ids:
+
+| Preset | Alias |
+| ---- | ---- |
+| `[Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M]` | `coder32` |
+| `[unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF:Q4_K_M]` | `devstral` |
+| `[unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF:UD-Q4_K_XL]` | `r1-14b` |
+| `[unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL]` | `gemma-26b` |
+| `[unsloth/gpt-oss-120b-GGUF:UD-Q4_K_XL]` | `gpt-oss-120b` |
+| `[unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF:UD-Q4_K_XL]` | `r1-70b` |
+| `[unsloth/Llama-3.3-70B-Instruct-GGUF:UD-Q4_K_XL]` | `llama70` |
+
+### 3. Promote cache models to presets (all fit the MI25 GPU)
+
+| New preset | Proposed settings | Role |
+| ---- | ---- | ---- |
+| `[bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M]` | `ngl = 99`, `ctx-size = 16384`, `temp = 0.2`, `alias = coder14` | mid-size GPU coder |
+| `[unsloth/Qwen3.5-9B-GGUF:Q4_K_M]` | `ngl = 99`, `ctx-size = 32768`, `alias = qwen9` | general 9B |
+| `[unsloth/gpt-oss-20b-GGUF:UD-Q4_K_XL]` | `ngl = 99`, `ctx-size = 32768`, `alias = gpt-oss-20b` | llama.vscode agent model |
+| `[unsloth/gemma-4-12B-it-qat-GGUF:Q4_K_XL]` | `ngl = 99`, `ctx-size = 32768`, `alias = gemma-12b` | general 12B |
+
+### 4. MTP on the 120B — benchmarked 2026-08-26, no change needed
+
+Measured on beast with a scratch llama-server (`scripts/mtp-bench-beast.sh`), `gpt-oss-120b` UD-Q4_K_XL, `-ngl 0`, 319-token prompt, 128 generated tokens:
+
+| Run | Generation t/s | Prompt t/s | Note |
+| ---- | ---- | ---- | ---- |
+| default (no flags) | 9.30 | 2.38 | "graphs reused = 127" in the server log |
+| `--spec-type draft-mtp` | failed to start | — | expects a separate drafter model ("failed to create llama_context from model") |
+
+Conclusion: llama.cpp **auto-enables the gpt-oss built-in MTP head** — the default run already hits 9.3 t/s (matching the owner's earlier 8.42 t/s benchmark, and ~10× the 70B models' 0.91 t/s). No `spec-type` preset line is needed or valid for gpt-oss.
+Second finding: prompt processing is slow (2.4 t/s) — the 120B suits generation-heavy background batches with modest prompts, not long-context agent sessions (see `documents/10-routing-policy.md`).
+
+### 5. gemma-26B context
+
+- `ctx-size = 81920` is kept (owner's choice) but note the KV cost; the commented `65536` is a lighter alternative. No change proposed.
+
+## Athena
+
+### 1. `[*]` global
+
+| Key | Current | Proposed | Why |
+| ---- | ---- | ---- | ---- |
+| `parallel` | unset (1) | `4` | same as beast |
+
+### 2. Aliases
+
+| Preset | Alias |
+| ---- | ---- |
+| `[Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q8_0]` | `coder15` |
+| `[Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0]` | `coder3` |
+| `[unsloth/Llama-3.2-3B-Instruct-GGUF:Q8_0]` | `llama3` |
+| `[unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL]` | `gemma-e4` |
+| `[Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M]` | `coder32-fallback` |
+| `[unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:UD-Q4_K_XL]` | `r1-32b-fallback` |
+
+### 3. Embeddings preset (RAG enabler)
+
+| New preset | Proposed settings | Role |
+| ---- | ---- | ---- |
+| `[ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0]` | `embeddings = on`, `pooling = mean` (verify keys against `llama-server --help`), `alias = nomic-embed` | `/v1/embeddings` for RAG |
+
+Verify the preset key spelling on athena's build (10129) before applying: `llama-server --help | grep -i embed`.
+
+## Apply Procedure (owner)
+
+1. Edit `/usr/local/etc/config.ini` on beast, then `sudo systemctl restart llama.service` on beast.
+2. Same for athena.
+3. Refresh captures: `make capture`; confirm the new aliases and presets in `/v1/models`.
+4. Re-run `make test`.
+
+## Open items
+
+- 27B family was discarded (retention decision); no preset is proposed for it.
+- Verify the coder-14B, qwen-9B, gpt-oss-20b, gemma-12B promotions actually fit MI25 VRAM at their contexts after restart (watch `llama-server` logs for offload spill).
