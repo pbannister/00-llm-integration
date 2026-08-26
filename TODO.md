@@ -7,7 +7,7 @@ The owner's ordering decision (2026-08-26): sort the llama service config first,
 * [x] 01 — complete: retention + discard executed; tuning recommendations APPLIED 2026-08-26 (aliases, `parallel = 4`, four GPU preset promotions, Nomic embeddings preset verified via `/v1/embeddings`); MTP benchmark confirmed gpt-oss native head (9.3 t/s), no config needed.
 * [x] 02 — captures refreshed 2026-08-26 with the tuned routers (13 beast / 15 athena); map/catalog docs updated.
 * [x] 03 — complete: DSH `llm-pi-ai` section applied to `~/.dsh/settings.yaml` (beast 11 + athena 6 models, alias ids, correct capacities); `BEAST_API_KEY`/`ATHENA_API_KEY` set in `~/.dsh/.credentials.yaml`.
-* [ ] 04 — finish the tool-integration document (aider, llama.vscode, VS Code Chat) (see `prompts/tasks/04-document-tool-integration.md`).
+* [x] 04 — complete: `documents/09-tool-integration.md` rewritten with router aliases, the three VS Code Chat options and the decision, per-purpose llama.vscode models, and version-dependent vs stable notes (verified 2026-08-26).
 * [x] Apply `cache-reuse = 256` to `[*]` on both hosts (applied 2026-08-26, verified).
 * [ ] 05 — finalize the minerva offline plan (hardware discovered 2026-08-26; see `prompts/tasks/05-plan-minerva-offline.md` and `documents/11-minerva-travel-plan.md`).
 
