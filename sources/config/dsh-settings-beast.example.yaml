@@ -1,0 +1,59 @@
+# DeepSeek Harness `llm-pi-ai` provider section for the beast router.
+#
+# Target: ~/.dsh/settings.yaml — merge this section under the existing keys.
+# The adapter re-reads the section per request; no restart is needed.
+# Credentials: store any non-empty value under BEAST_API_KEY via the DSH
+# Models settings (writes ~/.dsh/.credentials.yaml), or export it in the
+# dsh launch environment. llama.cpp ignores Authorization until the router
+# runs with --api-key; if that is added, use the same value here.
+#
+# Facts verified 2026-08-26 from dataflow.in/endpoints/beast-models.json.
+# contextWindow must match the preset ctx-size (or undershoot); maxTokens
+# sits well under it. Bare id-only entries inherit 262144/32768 defaults
+# that exceed every preset — do not use them.
+#
+# If you prefer short ids, add `alias = <name>` lines to the beast preset
+# (/usr/local/etc/config.ini on beast) and use those names here instead.
+
+llm-pi-ai:
+  providers:
+    beast:
+      displayName: Beast (llama.cpp)
+      apiKeyEnv: BEAST_API_KEY
+      api: openai-completions
+      baseURL: http://beast.lan:2001/v1
+      compat:
+        supportsDeveloperRole: false
+        maxTokensField: max_tokens
+      models:
+        # --- Agent/editing (GPU-resident, fast) ---
+        - id: Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
+          contextWindow: 16384
+          maxTokens: 8192
+        - id: unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF:Q4_K_M
+          contextWindow: 32768
+          maxTokens: 8192
+        # --- Reasoning Q&A (GPU-resident) ---
+        - id: unsloth/DeepSeek-R1-Distill-Qwen-14B-GGUF:Q4_K_XL
+          contextWindow: 32768
+          maxTokens: 8192
+        # --- Large context ---
+        - id: unsloth/gemma-4-26B-A4B-it-qat-GGUF:Q4_K_XL
+          contextWindow: 81920
+          maxTokens: 16384
+        # --- Background CPU work (slow, keeps MI25 free) ---
+        - id: unsloth/gpt-oss-120b-GGUF:Q4_K_XL
+          contextWindow: 65536
+          maxTokens: 16384
+        - id: unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF:Q4_K_XL
+          contextWindow: 32768
+          maxTokens: 8192
+        - id: unsloth/Llama-3.3-70B-Instruct-GGUF:Q4_K_XL
+          contextWindow: 32768
+          maxTokens: 8192
+
+# Switch the default agent model with the GUI model picker (leave
+# reasoning effort off for local models), or set:
+# agent-default-model:
+#   provider: beast
+#   model: Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M
