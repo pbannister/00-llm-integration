@@ -14,10 +14,10 @@ The owner's ordering decision (2026-08-26): sort the llama service config first,
 ## Open Questions
 
 * [x] Owner reviewed retention 2026-08-26: question closed. The approved discard was executed; the leftover quants on athena (`Qwen2.5-Coder-1.5B/3B` Q4_K_M cache quants, unused `ggml-org` 1.5B repo) are kept as-is by decision.
-* [ ] MTP: confirm the gpt-oss-120b speedup with `llama-bench --spec-type none` vs `draft-mtp`; adopt drafters for other families only where they help.
-* [ ] RAG: enable the Nomic embeddings preset (task 01); decide later whether to stand up Open WebUI RAG.
-* [ ] Add a `Host minerva.lan` block to `~/.ssh/config` (key-athena works) so Ansible and SSH use it cleanly.
-* [ ] Confirm the live `config.ini` locations on both hosts (`/usr/local/etc/config.ini`) versus the imported `~/models/config-*.ini` copies, which are older.
+* [x] MTP — resolved 2026-08-26: gpt-oss-120b auto-uses its native MTP head (9.3 t/s measured via scratch server; explicit `draft-mtp` needs a separate drafter and fails on gpt-oss); other families: EAGLE-3/ngram are optional experiments, not adopted (see `records/2026-08-26-05-version-review.md`, `documents/13-mtp-and-rag.md`).
+* [x] RAG — resolved 2026-08-26: embeddings preset enabled and verified (`/v1/embeddings` returns 768-dim via `nomic-embed`); purpose documented (`documents/13-mtp-and-rag.md`). Standing up Open WebUI RAG remains an optional future choice.
+* [x] `Host minerva.lan` block added to `~/.ssh/config` (key-athena); `ssh minerva.lan` verified 2026-08-26.
+* [x] Live config locations confirmed 2026-08-26: `/usr/local/etc/config.ini` on both hosts (edited, backed up, restarted this session); the imported `~/models/config-*.ini` copies are older snapshots (see `documents/12-model-retention.md`).
 * [ ] VS Code: disable/uninstall the Copilot extension (`ms-azuretools.vscode-azure-github-copilot` on athena) to finish the llama.vscode switch.
 
 ## Recently Completed

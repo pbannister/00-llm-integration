@@ -68,4 +68,4 @@ Rationale: the 3B coder Q8 is the sweet spot — full coding capability, FIM sup
 ## Provisioning
 
 `minerva.lan` is in the homelab Ansible inventory (192.168.8.186) with SSH.
-Add the key-athena path as the SSH key for minerva in `~/.ssh/config` (a `Host minerva.lan` block) before Ansible targets it.
+A `Host minerva.lan` block in `~/.ssh/config` (User preston, IdentityFile `~/.ssh/keys/key-athena`) was added 2026-08-26; `ssh minerva.lan` verified. Ansible targets of minerva now resolve the key through the SSH config.
