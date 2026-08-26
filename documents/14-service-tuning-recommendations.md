@@ -1,8 +1,8 @@
-# Service Tuning Recommendations — draft 2026-08-26
+# Service Tuning Recommendations — APPLIED 2026-08-26
 
-Task 01 output. Recommended llama.cpp preset changes for beast and athena.
-Nothing here is applied to the live hosts until the owner reviews.
-Baseline: live `/usr/local/etc/config.ini` on each host, model facts from `documents/08-model-catalog.md` and `documents/12-model-retention.md`.
+Task 01 output. Applied to both hosts on 2026-08-26 and verified (aliases route, `--parallel 4` in child args, embeddings endpoint answers).
+Applied configs archived at `sources/config/beast-config.applied.ini` and `sources/config/athena-config.applied.ini`; live baselines backed up as `/usr/local/etc/config.ini.bak-20260826` on each host.
+Model facts from `documents/08-model-catalog.md` and `documents/12-model-retention.md`.
 
 ## Beast
 
@@ -79,7 +79,7 @@ Second finding: prompt processing is slow (2.4 t/s) — the 120B suits generatio
 
 Verify the preset key spelling on athena's build (10129) before applying: `llama-server --help | grep -i embed`.
 
-## Apply Procedure (owner)
+## Apply Procedure (done 2026-08-26)
 
 1. Edit `/usr/local/etc/config.ini` on beast, then `sudo systemctl restart llama.service` on beast.
 2. Same for athena.

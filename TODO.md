@@ -4,9 +4,9 @@
 
 The owner's ordering decision (2026-08-26): sort the llama service config first, then the DSH settings.
 
-* [x] 01 — retention analysis written and discard executed 2026-08-26; tuning recommendations drafted in `documents/14-service-tuning-recommendations.md` (aliases, `parallel`, promotions, embeddings preset); MTP benchmark result appended. Owner applies the preset changes and restarts.
-* [ ] 02 — refresh the live endpoint captures and re-derive the map/catalog documents (see `prompts/tasks/02-capture-endpoint-facts.md`).
-* [ ] 03 — fix the DSH `beast` provider catalog to match the tuned router (aliases or full ids) and verify a request (see `prompts/tasks/03-fix-dsh-provider-catalog.md`).
+* [x] 01 — complete: retention + discard executed; tuning recommendations APPLIED 2026-08-26 (aliases, `parallel = 4`, four GPU preset promotions, Nomic embeddings preset verified via `/v1/embeddings`); MTP benchmark confirmed gpt-oss native head (9.3 t/s), no config needed.
+* [x] 02 — captures refreshed 2026-08-26 with the tuned routers (13 beast / 15 athena); map/catalog docs updated.
+* [ ] 03 — DSH provider: apply the corrected `llm-pi-ai` section (aliases now exist on the router: `coder32`, `gpt-oss-120b`, ...) and verify a request (see `prompts/tasks/03-fix-dsh-provider-catalog.md`).
 * [ ] 04 — finish the tool-integration document (aider, llama.vscode, VS Code Chat) (see `prompts/tasks/04-document-tool-integration.md`).
 * [ ] 05 — finalize the minerva offline plan (hardware discovered 2026-08-26; see `prompts/tasks/05-plan-minerva-offline.md` and `documents/11-minerva-travel-plan.md`).
 
