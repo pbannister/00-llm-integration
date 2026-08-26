@@ -17,7 +17,9 @@ The LLM does not load these files as project rules.
 - `08-model-catalog.md` — the per-host model catalog derived from the router captures.
 - `09-tool-integration.md` — aider, llama.vscode, and VS Code Chat usage against the local routers.
 - `10-routing-policy.md` — GPU-fast versus CPU-background execution policy.
-- `11-minerva-travel-plan.md` — the offline laptop plan (created by task `prompts/tasks/04-plan-minerva-offline.md`).
+- `11-minerva-travel-plan.md` — the offline laptop plan (hardware verified 2026-08-26).
+- `12-model-retention.md` — model retention analysis (discard candidates, none discarded yet).
+- `13-mtp-and-rag.md` — MTP and RAG explainers with local support.
 
 ## Canonical Files
 
@@ -35,3 +37,5 @@ The following filenames are canonical and must not be renamed or duplicated with
 - `09-tool-integration.md`
 - `10-routing-policy.md`
 - `11-minerva-travel-plan.md`
+- `12-model-retention.md`
+- `13-mtp-and-rag.md`

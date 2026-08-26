@@ -1,6 +1,15 @@
 # Feature: Minerva Travel Laptop
 
-Defines the offline inference plan for the laptop `minerva.lan` (192.168.8.186, WiFi, SSH available per the homelab inventory). Hardware specs are unknown and must be discovered before choosing a model.
+Defines the offline inference plan for the laptop `minerva.lan` (192.168.8.186, WiFi, SSH available per the homelab inventory).
+
+## Hardware (verified 2026-08-26)
+
+- CPU: AMD Ryzen 7 7840U (16 threads).
+- GPU: AMD Radeon 780M (RDNA3 iGPU, shared memory) — Vulkan via Mesa RADV expected; confirm with `vulkaninfo --summary`.
+- RAM: 14 GB total (~11 GB available); iGPU VRAM comes out of this pool.
+- Disk: 935 GB, ~691 GB free.
+- OS: Ubuntu 24.04.4 LTS. llama.cpp not yet installed.
+- SSH: `ssh -i ~/.ssh/keys/key-athena preston@minerva.lan` works (key-athena is the access key).
 
 ## Goal
 
@@ -18,11 +27,11 @@ Record the findings in `records/` and update `documents/07-endpoints-map.md`.
 
 ## Model Candidates (from the existing catalog)
 
-- `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q8_0` — smallest coder, fits weak iGPUs and 4 GB VRAM.
-- `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0` — better coder, fits 4–8 GB.
+- `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0` — recommended default: coding + editing, FIM-capable; fits the shared-memory iGPU comfortably.
 - `unsloth/gemma-4-E2B-it-qat-GGUF:UD-Q4_K_XL` — 2B QAT gemma, small and capable.
-- `unsloth/Llama-3.2-3B-Instruct-GGUF:Q8_0` — general chat.
-- `unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL` — 4B, upper bound for a laptop.
+- `unsloth/Qwen3.5-4B-GGUF:Q4_K_M` — general chat alternative.
+- `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q8_0` — minimal fallback; fastest.
+- `unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL` — 4B, upper bound for the laptop.
 
 Keep the travel model at or below 4B parameters for battery life and thermals.
 

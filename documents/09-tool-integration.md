@@ -44,15 +44,23 @@ Best use against the local routers:
 
 Point the extension at `http://beast.lan:2001/v1` (or `http://athena.lan:2001/v1` for the small completions), and select the per-purpose model in its model picker.
 
-## VS Code Chat View
+## VS Code Chat View — decision 2026-08-26: suppress Copilot, use llama.vscode
 
-The Chat view is tied to GitHub Copilot. Options for local or OpenAI-compatible providers:
+The Chat view is tied to GitHub Copilot, and the owner decided (2026-08-26) to suppress it and use llama.vscode instead.
 
-1. GitHub Copilot BYOK (bring your own key): Copilot Chat accepts an OpenAI-compatible base URL and key; point it at `http://beast.lan:2001/v1`. Requires a Copilot plan.
-2. Third-party gateway extensions that route Copilot Chat to self-hosted models (for example `github-copilot-llm-gateway`, `AgenticProxy` on the marketplace).
-3. Skip the Chat view: llama.vscode chat and Cline/Roo Code cover chat and agentic editing without Copilot.
+How to suppress:
 
-Recommendation: do not run overlapping agent UIs on the same project simultaneously; pick one surface per task. The desktop already has DSH (agentic sessions), aider (CLI), and llama.vscode (editor) — the Copilot Chat view adds little unless BYOK is already available.
+- Extensions panel: disable or uninstall the Copilot extensions. On athena the installed Copilot-related extension is `ms-azuretools.vscode-azure-github-copilot` (plus the standard `github.copilot` / `github.copilot-chat` if present).
+- Per-workspace fallback: `"github.copilot.enabled": false` in `.vscode/settings.json` keeps the extensions installed but off.
+
+The replacement is llama.vscode (`ggml-org.llama-vscode`, version 0.0.63 installed on athena):
+
+- Chat and the Llama Agent run entirely against the local routers; no Copilot plan needed.
+- The Llama Agent works best with gpt-oss-20b (the extension's own recommendation); promote `unsloth/gpt-oss-20b-GGUF:Q4_K_XL` to a beast GPU preset in task 01.
+- Inline completion needs a FIM-capable model: the Qwen2.5-Coder family (1.5B/3B on athena, 32B on beast).
+- MCP tools from installed VS Code MCP servers can be selected for the agent.
+
+Do not run overlapping agent UIs on the same project simultaneously; pick one surface per task (DSH for agentic sessions, aider in the CLI, llama.vscode in the editor).
 
 ## Tool-Against-Task Summary
 
