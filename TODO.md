@@ -9,11 +9,11 @@ The owner's ordering decision (2026-08-26): sort the llama service config first,
 * [x] 03 — complete: DSH `llm-pi-ai` section applied to `~/.dsh/settings.yaml` (beast 11 + athena 6 models, alias ids, correct capacities); `BEAST_API_KEY`/`ATHENA_API_KEY` set in `~/.dsh/.credentials.yaml`.
 * [x] 04 — complete: `documents/09-tool-integration.md` rewritten with router aliases, the three VS Code Chat options and the decision, per-purpose llama.vscode models, and version-dependent vs stable notes (verified 2026-08-26).
 * [x] Apply `cache-reuse = 256` to `[*]` on both hosts (applied 2026-08-26, verified).
-* [ ] 05 — finalize the minerva offline plan (hardware discovered 2026-08-26; see `prompts/tasks/05-plan-minerva-offline.md` and `documents/11-minerva-travel-plan.md`).
+* [x] 05 — complete: `documents/11-minerva-travel-plan.md` finalized with exact GGUF files/sizes on minerva, build-and-serve steps, and the offline checklist (verified 2026-08-26). Deployment itself is a follow-up.
 
 ## Open Questions
 
-* [ ] Owner reviews `documents/12-model-retention.md` and decides which discard candidates to remove (nothing is deleted without the decision).
+* [x] Owner reviewed retention 2026-08-26: question closed. The approved discard was executed; the leftover quants on athena (`Qwen2.5-Coder-1.5B/3B` Q4_K_M cache quants, unused `ggml-org` 1.5B repo) are kept as-is by decision.
 * [ ] MTP: confirm the gpt-oss-120b speedup with `llama-bench --spec-type none` vs `draft-mtp`; adopt drafters for other families only where they help.
 * [ ] RAG: enable the Nomic embeddings preset (task 01); decide later whether to stand up Open WebUI RAG.
 * [ ] Add a `Host minerva.lan` block to `~/.ssh/config` (key-athena works) so Ansible and SSH use it cleanly.

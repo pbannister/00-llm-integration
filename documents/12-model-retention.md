@@ -83,9 +83,10 @@ The 70B/120B/27B and big GPU cache entries on athena run at ~1 t/s on the 5900X 
 - `unsloth/DeepSeek-R1-Distill-Qwen-1.5B-GGUF:Q4_K_XL`, `unsloth/Llama-3.2-1B-Instruct-GGUF:Q4_K_M`/`Q8_0` — no role.
 - `unsloth/Llama-3.2-3B-Instruct-GGUF:Q4_K_M` — the Q8 preset is the keeper.
 
-## Remaining cleanup candidates (not in the approved list)
+## Remaining cleanup candidates — kept by decision (2026-08-26)
 
-- on athena: `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M` and `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M` cache quants remain in repos whose Q8 presets are kept; and the unused `ggml-org/Qwen2.5-Coder-1.5B-Q8_0-GGUF` repo remains on disk. Owner to decide; no deletion performed.
+- on athena: `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M` and `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M` cache quants remain in repos whose Q8 presets are kept; and the unused `ggml-org/Qwen2.5-Coder-1.5B-Q8_0-GGUF` repo remains on disk.
+- Owner closed the retention question on 2026-08-26: these leftovers are kept as-is (harmless on disk; usable as lighter fallbacks, and the 3B/1.5B Q4_K_M quants are useful for a weak laptop). No further deletion planned.
 
 ## Benchmark reference
 
