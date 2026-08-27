@@ -1,0 +1,41 @@
+<h1>LLM Integration — project status</h1>
+
+<p>
+This project owns the local-LLM integration story for the home network:
+which models run on which host, how every tool reaches them, and the
+policies for splitting work between GPU-fast and CPU-heavy models.
+</p>
+
+<h2>What is live</h2>
+
+<ul>
+  <li>Two llama.cpp routers (router mode, presets, aliases): the heavy server
+      (GPU + dual-Xeon CPU) and the desktop server (GPU + CPU fallbacks).</li>
+  <li>Tuned service configs: <code>parallel 4</code>, <code>cache-reuse 256</code>,
+      KV-cache quantization (q8_0 common, q4_0 on the large-context gemma
+      presets), an embeddings endpoint for retrieval work.</li>
+  <li>DeepSeek Harness provider routes to both routers, with the model
+      catalog, retention policy, and routing policy documented here.</li>
+  <li>Tooling guides for aider, the editor extension, and the travel-laptop
+      deployment plan (a laptop with a local Vulkan build of llama.cpp).</li>
+</ul>
+
+<h2>Status</h2>
+
+<ul>
+  <li>Status: active.</li>
+  <li>Phase 1 (initial integration and deployment) complete: routers tuned,
+      catalog and retention settled, providers wired, travel plan deployed.</li>
+  <li>Deferred: retrieval-augmented chat UI (decided not to pursue for now).</li>
+</ul>
+
+<h2>How it works</h2>
+
+<p>
+Facts are captured from the live routers at build time, never hand-copied:
+model lists, contexts, and aliases come from the captured endpoint
+responses in <code>dataflow.in/endpoints/</code>. Documents carry
+<code>verified &lt;date&gt;</code> markers for live-state facts. The
+published pages are built by <code>scripts/site-pages.sh</code> (the
+homelab project-pages conventions) and published by the homelab project.
+</p>
