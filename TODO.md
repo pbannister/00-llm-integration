@@ -2,10 +2,10 @@
 
 ## Next Tasks (in order)
 
-* [ ] 01 — Deploy minerva: build llama.cpp with the Vulkan backend, serve the 3B coder on `127.0.0.1:2001`, run the offline checklist (`documents/11-minerva-travel-plan.md`).
-* [ ] 02 — Optional: stand up Open WebUI RAG against the athena `/v1/embeddings` endpoint (`nomic-embed`).
+* [x] 01 — minerva deployed 2026-08-26: llama.cpp 0.3.0-dev built with Vulkan (glslc + spirv-headers + ldconfig), `llama.service` active on `127.0.0.1:2001`, 4 presets (coder3 default), RADV pinned, `coder3` verified; offline checklist items 3-4 pending the user's own WiFi-off test.
+* [ ] 02 — DEFERRED 2026-08-26: Open WebUI RAG against the athena `/v1/embeddings` endpoint (`nomic-embed`).
 * [ ] 03 — Optional: decide on KV-cache quantization (`cache-type-k/v = q8_0`) for the GPU models — the memory lever for gemma-26b's 81920 ctx; a speed/quality tradeoff (`records/2026-08-26-05-version-review.md`).
-* [ ] 04 — Housekeeping: deduplicate the repeated `--chat-template llama3` args in athena's `llama.service` ExecStart.
+* [x] 04 — athena `llama.service` deduped (4x → 1x `--chat-template llama3`), restarted, 15 models up (verified 2026-08-26).
 
 ## Open Questions
 
