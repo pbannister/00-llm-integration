@@ -4,7 +4,7 @@
 
 * [x] 01 — minerva deployed 2026-08-26: llama.cpp 0.3.0-dev built with Vulkan (glslc + spirv-headers + ldconfig), `llama.service` active on `127.0.0.1:2001`, 4 presets (coder3 default), RADV pinned, `coder3` verified; offline checklist items 3-4 pending the user's own WiFi-off test.
 * [ ] 02 — DEFERRED 2026-08-26: Open WebUI RAG against the athena `/v1/embeddings` endpoint (`nomic-embed`).
-* [ ] 03 — Optional: decide on KV-cache quantization (`cache-type-k/v = q8_0`) for the GPU models — the memory lever for gemma-26b's 81920 ctx; a speed/quality tradeoff (`records/2026-08-26-05-version-review.md`).
+* [ ] 03 — KV-cache quantization: analysis done 2026-08-26 (`records/2026-08-26-09-kv-quant-analysis.md`; q8_0 halves KV, no downloads needed). Awaiting the owner's go to apply `cache-type-k/v = q8_0` in `[*]` on both routers.
 * [x] 04 — athena `llama.service` deduped (4x → 1x `--chat-template llama3`), restarted, 15 models up (verified 2026-08-26).
 
 ## Open Questions

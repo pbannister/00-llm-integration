@@ -92,6 +92,12 @@ Verify the preset key spelling on athena's build (10129) before applying: `llama
 - Verify the coder-14B, qwen-9B, gpt-oss-20b, gemma-12B promotions actually fit MI25 VRAM at their contexts after restart (watch `llama-server` logs for offload spill).
 
 
+## KV-cache quantization analysis (task 03) — 2026-08-26
+
+- KV quant is a runtime setting (`cache-type-k/v`), not a weight change: **no model downloads or variants needed**.
+- Measured from GGUF metadata (`scripts/kv-cache-size.py`): q8_0 halves KV memory everywhere; the big levers are gemma-26b at 81920 ctx (12.9 → 6.4 GB) and gemma-12b at 32768 (11.3 → 5.6 GB).
+- Recommendation: `cache-type-k = q8_0` + `cache-type-v = q8_0` in `[*]` on both routers; optional `cache-type-v = q4_0` per-preset for gemma-26b/gemma-12b. Full table in `records/2026-08-26-09-kv-quant-analysis.md`.
+
 ## Version review 2026-08-26 (llama.cpp 0.3.0-dev rebuild)
 
 - Verified the tuned configs work unchanged on beast 10657 / athena 10643; aliases and `parallel = 4` intact.
