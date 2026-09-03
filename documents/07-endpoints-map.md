@@ -20,7 +20,7 @@ Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endp
 | DSH web GUI (athena) | `http://127.0.0.1:3080` | — | — |
 
 Both routers answer OpenAI-compatible chat completions with `--tools all`.
-Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 16 (athena, incl. the `qwen27` Qwen3.8-27B preset) models as of the 2026-09-03 capture.
+Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 17 (athena; the loaded `batiai` qwen27 preset plus a stale `bartowski` cache entry, removed from disk 2026-09-03 and gone after the next service restart) models as of the 2026-09-03 capture.
 
 ## Router Presets
 

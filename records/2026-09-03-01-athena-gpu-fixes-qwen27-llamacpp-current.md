@@ -33,7 +33,7 @@ top-p = 0.95
 
 - Dense 27B, `qwen3_5` arch (supported by athena's build), native 256K ctx; Q4_K_M is a ~16 GB single-file GGUF.
 - No explicit `ngl` → `fit` trims layers to the 8 GB VRAM, excess on CPU (same stability pattern as beast's 2026-09-02 GPU-preset change: `flash-attn = false` requires `cache-type-v = f16`). Athena's other small fully-offloaded GPU presets keep their original settings.
-- Registered (unloaded; athena now 16 models). Baseline: `config.ini.bak-20260903`. First use restores the model from `/backups/huggingface/hub/models--bartowski--Qwen3.8-27B-GGUF` (18 G, present on both hosts from the 2026-08-26 discard) — **no web download** (download-once convention, `documents/12-model-retention.md`).
+- Registered (unloaded; athena now 16 models). Baseline: `config.ini.bak-20260903`. **Correction 2026-09-03 (see `records/2026-09-03-02-athena-qwen27-load-fixes.md`)**: the preset resolves the **batiai** repo — the `/backups/huggingface/` copy is `bartowski` (wrong repo), so the model files were web-downloaded; the bartowski working-cache restore was removed again. qwen27 now verified loading/serving after the athena rebuild to 10802.
 
 ## Notes
 
