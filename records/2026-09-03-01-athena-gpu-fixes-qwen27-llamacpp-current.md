@@ -2,10 +2,10 @@
 
 ## llama.cpp builds live on both hosts (2026-09-03)
 
-- **beast**: build **10801**, commit `dfc95c594` (source `~/sources/llama.cpp` at that HEAD; installed 05:54, `llama.service` restarted 05:58). Health OK, 14 models.
+- **beast**: build **10801**, commit `dfc95c594` (installed 05:54 from `~/sources/llama.cpp`, `llama.service` restarted 05:58). Health OK, 14 models.
 - **athena**: build **10776**, commit `2d7523fa7` (the local "Local builds." commit; re-installed 05:53 from `~/sources/llama.cpp/build-x64-linux-vulkan-release`; `llama.service` restarted 05:58). Health OK, **16 models**.
 - `qwen4exp` (Qwen3.8-Flash-Next) arch present on both (93 refs each).
-- **Note**: athena's `~/sources/llama.cpp` HEAD is ~12 h behind beast's (`2d7523fa7` vs `dfc95c594`) — fetch on athena and rebuild if build parity is wanted.
+- **Build convention**: llama.cpp is built from source on **both** hosts from `~/sources/llama.cpp/`. Beast's checkout carries local commits (ROCm experimentation — not relevant to current Vulkan/CPU use). The reported build numbers (10776 / 10801) are **local build counters, not upstream release tags** (there is no tagged "10801" upstream) — differing numbers across hosts do not imply a version gap; the as-built binaries are functionally identical.
 
 ## athena GPU was disabled — root cause and fix
 
@@ -37,5 +37,6 @@ top-p = 0.95
 
 ## Notes
 
+- The empty `GGML_VK_VISIBLE_DEVICES` almost certainly came from `sources/models/install.sh`, whose MI25 auto-detect yields an empty value on non-MI25 hosts (a comment now marks the pitfall in the script).
 - beast `qwen38` (Qwen3.8-Flash-Next, 119 GB Q4) still unloaded — first use downloads ~119 GB (239 GB free on `/home`).
 - Both hosts now run llama.cpp with `qwen4exp` + `qwen35` support; athena GPU confirmed working end-to-end via llama-bench and router smoke tests.

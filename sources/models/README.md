@@ -24,7 +24,17 @@ The main trick to get the MI25 working is to use **llama.cpp** compiled to use t
 | ----              | ----      |
 | **install.sh**    | Sets up a **systemd** service to run **llama.cpp** in "router" mode.  |
 | **config.ini**    | Contains the **llama.cpp** server configuration.                      |
- 
+
+### Building llama.cpp
+
+llama.cpp is built from source on both hosts from `~/sources/llama.cpp/`
+(the `build-x64-linux-vulkan-release` tree; see `install.sh` for the service wiring).
+Beast's checkout carries local commits (ROCm experimentation — not relevant to the
+Vulkan/CPU use documented here). The build number `llama-server --version` reports
+(10776, 10801, …) is a **local build counter, not an upstream release tag** —
+differing numbers across hosts do not imply a version gap; the as-built binaries
+are functionally identical.
+
 Note I am allowing *unsecured* connections (as my local subnet is secure).
 Again, this is specific to my purpose.
 

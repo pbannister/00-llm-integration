@@ -23,6 +23,11 @@ DETECTED_DEVICES="$(
             }' 
 )"
 
+# NOTE: on hosts without an MI25, DETECTED_DEVICES is empty and this line yields
+# GGML_VK_VISIBLE_DEVICES="" — an EMPTY value makes llama.cpp ignore the GPU
+# entirely ("no usable GPU found, --gpu-layers option will be ignored") and every
+# model silently runs on CPU. Set it explicitly (GGML_VK_VISIBLE_DEVICES=0) on such
+# hosts; see records/2026-09-03-01-athena-gpu-fixes-qwen27-llamacpp-current.md.
 GGML_VK_VISIBLE_DEVICES=${GGML_VK_VISIBLE_DEVICES-${DETECTED_DEVICES}}
 
 CONFIG_FILE1="${MODEL_HOME}/config-$(hostname).ini"
