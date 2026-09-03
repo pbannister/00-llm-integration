@@ -89,7 +89,7 @@ Verify the preset key spelling on athena's build (10129) before applying: `llama
 ## Open items
 
 - 27B family was discarded (retention decision); no preset is proposed for it.
-- Verify the coder-14B, qwen-9B, gpt-oss-20b, gemma-12B promotions actually fit MI25 VRAM at their contexts after restart (watch `llama-server` logs for offload spill).
+- ~~Verify the coder-14B, qwen-9B, gpt-oss-20b, gemma-12B promotions actually fit MI25 VRAM at their contexts after restart (watch `llama-server` logs for offload spill).~~ **Resolved 2026-09-02**: explicit `ngl = 99` was defeating `fit = on`; presets now omit `ngl` so layers trim to 16 GiB VRAM (see the GPU-preset stability section above).
 
 
 ## KV-cache quantization analysis (task 03) — 2026-08-26
@@ -103,3 +103,14 @@ Verify the preset key spelling on athena's build (10129) before applying: `llama
 - Verified the tuned configs work unchanged on beast 10657 / athena 10643; aliases and `parallel = 4` intact.
 - New recommendation from the rebuild: `cache-reuse = 256` under `[*]` on both hosts (KV shifting reuse across requests; targets the 120B's slow prompt processing with repeated system prompts). APPLIED 2026-08-26 and verified in child args. Baselines: `/usr/local/etc/config.ini.bak-20260826-cachereuse`. See `records/2026-08-26-06-dsh-and-cache-reuse-applied.md`.
 - `--parallel` default is now auto; the explicit `4` still applies.
+
+## GPU-preset stability change 2026-09-02 (beast)
+
+After recurring amdgpu ring timeouts / Vulkan device loss on the MI25 (60 device-lost events since Jul 31 — see `records/2026-09-02-01-mi25-vulkan-device-lost-tuning.md`), the beast GPU presets changed 2026-09-02 (baseline `/usr/local/etc/config.ini.bak-20260902`):
+
+- Removed explicit `ngl = 99` from all GPU presets — `fit = on` now trims layers to the 16 GiB VRAM, with excess layers on CPU. Resolves the Aug 26 open item below: the explicit `ngl = 99` was defeating `fit` (coder32's 18.49 G weights exceed 16 G even at zero context).
+- `flash-attn = false` on GPU presets (VEGA10/gfx900 FA instability).
+- `cache-type-v = f16` on GPU presets — a quantized V cache requires flash-attn in llama.cpp; f16 V keeps attention valid with FA off (K stays `q8_0`).
+- CPU heavyweights unchanged (`ngl = 0`).
+- Gotcha: the router snapshots `config.ini` at `llama.service` start — edits need `sudo systemctl restart llama.service`.
+- Athena unchanged; revisit if athena's GPU shows the same resets.
