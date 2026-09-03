@@ -11,7 +11,8 @@ DIRECTORY_OUTPUT="$REPOSITORY_ROOT/dataflow.in/endpoints"
 mkdir -p "$DIRECTORY_OUTPUT"
 
 curl -s -m 10 http://beast.lan:2001/v1/models -o "$DIRECTORY_OUTPUT/beast-models.json"
+curl -s -m 10 http://beast.lan:2002/v1/models -o "$DIRECTORY_OUTPUT/beast-cpu-models.json"
 curl -s -m 10 http://athena.lan:2001/v1/models -o "$DIRECTORY_OUTPUT/athena-models.json"
 
-echo "endpoints-capture: wrote beast-models.json and athena-models.json"
+echo "endpoints-capture: wrote beast-models.json, beast-cpu-models.json and athena-models.json"
 exit 0

@@ -15,16 +15,13 @@ Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endp
 
 | Endpoint | Base URL | Default context | Auth |
 | ---- | ---- | ---- | ---- |
-| beast router | `http://beast.lan:2001/v1` | 32768 | none configured (`--api-key` not set) |
+| beast GPU router | `http://beast.lan:2001/v1` | 32768 | none configured (`--api-key` not set) |
+| beast CPU router | `http://beast.lan:2002/v1` | 65536 (gpt-oss-120b) | none configured |
 | athena router | `http://athena.lan:2001/v1` | 8192 | none configured |
 | DSH web GUI (athena) | `http://127.0.0.1:3080` | — | — |
 
 Both routers answer OpenAI-compatible chat completions with `--tools all`.
-Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 17 (athena; the loaded `batiai` qwen27 preset plus a stale `bartowski` cache entry, removed from disk 2026-09-03 and gone after the next service restart) models as of the 2026-09-03 capture.
-
-## Router Presets
-
-Both routers run in router mode (`--models-preset <config.ini>`) with the preset file at `/usr/local/etc/config.ini` on each host (to confirm; the imported copies in `sources/models/config-*.ini` are older snapshots).
+Model ids are preset section names or `hf-repo` cache names; the routers list 6 (beast GPU :2001), 1 (beast CPU :2002) and 17 (athena) models as of the 2026-09-03 capture.) with the preset file at `/usr/local/etc/config.ini` on each host (to confirm; the imported copies in `sources/models/config-*.ini` are older snapshots).
 Each model entry in the capture carries its full child-server command line (`status.args`) and the generated preset text, including `ctx-size`, `ngl`, and `--alias`.
 
 ## Request Flow

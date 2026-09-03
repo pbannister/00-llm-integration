@@ -28,15 +28,9 @@ llm-pi-ai:
         supportsDeveloperRole: false
         maxTokensField: max_tokens
       models:
-        # --- GPU-resident (fast, interactive) ---
-        - id: coder32
-          contextWindow: 16384
-          maxTokens: 8192
+        # --- GPU-resident (fast, interactive; one GPU model at a time on :2001) ---
         - id: coder14
           contextWindow: 16384
-          maxTokens: 8192
-        - id: devstral
-          contextWindow: 32768
           maxTokens: 8192
         - id: qwen9
           contextWindow: 32768
@@ -47,24 +41,27 @@ llm-pi-ai:
         - id: gemma-12b
           contextWindow: 32768
           maxTokens: 8192
-        # --- Reasoning Q&A (GPU-resident) ---
-        - id: r1-14b
-          contextWindow: 32768
-          maxTokens: 8192
-        # --- Large context (GPU-resident) ---
+        # --- ctx trimmed to 8192 to stay GPU-resident on 16 GiB ---
         - id: gemma-26b
-          contextWindow: 81920
-          maxTokens: 16384
-        # --- Background CPU work (slow; keeps the MI25 free) ---
+          contextWindow: 8192
+          maxTokens: 4096
+        # --- Flagship (GPU-fit: ~14 of 111 GiB on the MI25) ---
+        - id: qwen38
+          contextWindow: 16384
+          maxTokens: 8192
+    beast-cpu:
+      displayName: Beast CPU (llama.cpp :2002)
+      apiKeyEnv: BEAST_API_KEY
+      api: openai-completions
+      baseURL: http://beast.lan:2002/v1
+      compat:
+        supportsDeveloperRole: false
+        maxTokensField: max_tokens
+      models:
+        # --- CPU-heavyweight (system RAM, numa distribute) ---
         - id: gpt-oss-120b
           contextWindow: 65536
           maxTokens: 16384
-        - id: r1-70b
-          contextWindow: 32768
-          maxTokens: 8192
-        - id: llama70
-          contextWindow: 32768
-          maxTokens: 8192
     athena:
       displayName: Athena (llama.cpp)
       apiKeyEnv: ATHENA_API_KEY
@@ -99,4 +96,4 @@ llm-pi-ai:
 # effort off for local models), or set:
 # agent-default-model:
 #   provider: beast
-#   model: coder32
+#   model: coder14
