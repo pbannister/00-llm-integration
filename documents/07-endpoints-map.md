@@ -1,6 +1,6 @@
 # Endpoints Map — verified 2026-08-26
 
-Live-state facts captured 2026-08-26 from `GET /v1/models` on both routers.
+Live-state facts captured from `GET /v1/models` on both routers (last refreshed 2026-09-02).
 Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endpoints/athena-models.json`.
 
 ## Inference Hosts
@@ -20,7 +20,7 @@ Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endp
 | DSH web GUI (athena) | `http://127.0.0.1:3080` | — | — |
 
 Both routers answer OpenAI-compatible chat completions with `--tools all`.
-Model ids are preset section names or `hf-repo` cache names; the routers list 13 (beast) and 15 (athena) models as of the 2026-08-26 capture (after the approved cache discard).
+Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 15 (athena) models as of the 2026-09-02 capture.
 
 ## Router Presets
 
@@ -31,7 +31,7 @@ Each model entry in the capture carries its full child-server command line (`sta
 
 1. A client (DSH, aider, llama.vscode, curl) sends an OpenAI-compatible request to a router base URL with a `model` id.
 2. The router loads the matching child server (or uses the cached one) and forwards the request.
-3. GPU models (`ngl 99`) run on the host GPU; CPU models (`ngl 0`) run in system RAM with `numa = distribute` on beast.
+3. GPU models (no explicit `ngl`; `fit` trims layers to VRAM, excess on CPU) run on the host GPU; CPU models (`ngl 0`) run in system RAM with `numa = distribute` on beast.
 4. The router returns the OpenAI-formatted streamed response.
 
 ## Concurrency
