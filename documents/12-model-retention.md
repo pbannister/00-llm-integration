@@ -5,10 +5,23 @@ Nothing is discarded without the owner's decision.
 The first model set was downloaded by interest, then benchmarked (see `sources/models/_combine-amd-rx-5500.md` and `sources/models/logs/`).
 GGUF files live in the HuggingFace cache on each host (`HF_HUB_CACHE=/home/preston/.cache/huggingface/hub` on beast; default cache on athena).
 
+## Conventions (owner, 2026-09-03)
+
+- **Full archive**: everything ever downloaded is backed up by rsyncing the HF
+  cache to `/backups/huggingface/` on each host (large spinning storage, e.g.
+  `vg2-backups` 4 T); `sources/models/backup.sh` performs the copy. The archive
+  is not pruned by this project — a discarded model can always be restored from
+  it (verified: `bartowski/Qwen3.8-27B-GGUF` = 18 G on each host's backup).
+- **Working cache stays small**: the live `HF_HUB_CACHE` holds only models that
+  make sense to run on that host (roles below).
+- **Download once**: a model wanted on both hosts is rsynced host-to-host from
+  the host that has it (or restored from `/backups/huggingface/`), never
+  downloaded twice from the web.
+
 ## Discard executed 2026-08-26
 
 The owner approved the discard on 2026-08-26; the files below marked "Discard candidates" were deleted from the HuggingFace cache on beast and athena by `scripts/cache-discard.sh`.
-Backups exist at `/backups/huggingface/` on both hosts and are not managed by this project; a re-download is also possible if a model is needed later.
+Backups exist at `/backups/huggingface/` on both hosts (`sources/models/backup.sh`) and are not managed by this project; a re-download is also possible if a model is needed later.
 Beast freed ~163 GB (28 → 13 models); athena freed ~306 GB (32 → 15 models). Services were restarted to rescan the caches.
 One incident during execution: the blob-cleanup step of the first script run deleted keeper quants (`gpt-oss-120b`/`gpt-oss-20b` UD-Q4_K_XL on beast) because `stat -c %i` did not dereference symlinks; the keepers were restored over LAN from athena before athena's own discard ran. See `records/2026-08-26-03-cache-discard.md`.
 
@@ -104,3 +117,7 @@ From `sources/models/_combine-amd-rx-5500.md` (athena, 2026-07-28), generation t
 | DeepSeek-R1-Distill-70B (CPU) | 0.91 |
 
 Notes: the 120B at 8.42 t/s on CPU versus 0.91 t/s for the 70B models is the signature of MTP speculative decoding (the gpt-oss architecture has a native MTP head); verify with `--spec-type none` versus `draft-mtp` in task 01. See `documents/13-mtp-and-rag.md`.
+
+## Update 2026-09-03 — qwen27 re-promoted on athena
+
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` (discard candidate 2026-08-26: "none fits the GPU, CPU-only and slow") is re-promoted as the athena `qwen27` preset — athena's GPU was fixed (`records/2026-09-03-01-athena-gpu-fixes-qwen27-llamacpp-current.md`), making an 8 GB-VRAM GPU + CPU split viable. Restore it from `/backups/huggingface/hub/` on athena (18 G, present on both hosts) rather than re-downloading. It remains a discard candidate on beast (beast's Qwen3.8 role is the `qwen38` Flash-Next CPU preset, which has no backup anywhere and needs a first-time ~119 G download).
