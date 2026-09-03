@@ -1,6 +1,6 @@
 # Endpoints Map — verified 2026-08-26
 
-Live-state facts captured from `GET /v1/models` on both routers (last refreshed 2026-09-02).
+Live-state facts captured from `GET /v1/models` on both routers (last refreshed 2026-09-03).
 Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endpoints/athena-models.json`.
 
 ## Inference Hosts
@@ -20,7 +20,7 @@ Captured responses: `dataflow.in/endpoints/beast-models.json`, `dataflow.in/endp
 | DSH web GUI (athena) | `http://127.0.0.1:3080` | — | — |
 
 Both routers answer OpenAI-compatible chat completions with `--tools all`.
-Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 15 (athena) models as of the 2026-09-02 capture.
+Model ids are preset section names or `hf-repo` cache names; the routers list 14 (beast, incl. the `qwen38` Qwen3.8-Flash-Next CPU preset) and 16 (athena, incl. the `qwen27` Qwen3.8-27B preset) models as of the 2026-09-03 capture.
 
 ## Router Presets
 
