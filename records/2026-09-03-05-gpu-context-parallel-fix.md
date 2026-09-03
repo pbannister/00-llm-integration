@@ -20,3 +20,11 @@ confined to `n_ctx_slot = preset_ctx / 4` (coder14/qwen38 4096, gemma-26b 2048, 
   CPU-traffic-heavy; dial ctx down if too slow.
 
 The CPU router (:2002, gpt-oss-120b) is unchanged (`parallel 4`, 16384/slot, background batches).
+
+## Update (same day): CPU router also parallel 1
+
+A gpt-oss-120b request of 18,475 tokens failed with "exceeds the available context size
+(16384)" — the CPU router's `parallel = 4` divided its 65536 preset into 16384 slots.
+Set `parallel = 1` in `/usr/local/etc/config-cpu.ini` (backup: `config-cpu.ini.bak-20260903`),
+restarted `llama-cpu.service`; verified `n_ctx_slot = 65536`. Note: long prompts on the 120B
+prefill slowly on CPU (~13 t/s → ~20k tokens ≈ 25 min); that is speed, not context.
