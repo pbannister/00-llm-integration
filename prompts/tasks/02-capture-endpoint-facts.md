@@ -1,4 +1,5 @@
-[TASK]
+
+## TASK-DESCRIPTION
 Refresh the live endpoint captures and derive the endpoints map and model catalog documents.
 
 Run `make capture` from the repository root to refresh `dataflow.in/endpoints/beast-models.json` and `dataflow.in/endpoints/athena-models.json` from `GET /v1/models` on both routers.
@@ -10,17 +11,17 @@ Inspect the captures and create these documents:
 
 Do not modify any file outside `dataflow.in/endpoints/`, `documents/07-endpoints-map.md`, and `documents/08-model-catalog.md`.
 
-[OUTPUT FORMAT]
+## TASK-OUTPUT
 Provide a summary listing each created file and the per-host model counts.
 No commentary beyond the summary.
 
-[CONTEXT]
+## TASK-CONTEXT
 The endpoints are `http://beast.lan:2001/v1` and `http://athena.lan:2001/v1`.
 The router response includes per-model `status.args` and `preset` text that contain the context size and offload (`ngl`) settings.
 Feature requirements: `prompts/features/01-endpoints-and-models.md`.
 Generated documents must carry the provenance header rule from `prompts/03-conventions.md` section 6.1 only when a generator produced them; these are hand-written from captures, so they instead carry a `verified <date>` marker per the live-state discipline in `README.md`.
 
-[FILES]
+## TASK-FILES
 - `scripts/endpoints-capture.sh` — existing; invoked by `make capture`.
 - `dataflow.in/endpoints/beast-models.json` — existing; refresh via `make capture`.
 - `dataflow.in/endpoints/athena-models.json` — existing; refresh via `make capture`.

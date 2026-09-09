@@ -1,4 +1,5 @@
-[TASK]
+
+## TASK-DESCRIPTION
 Sort the llama.cpp service configuration on beast and athena before any client-side (DSH) work.
 
 The owner's ordering decision: llama service config first, then the DSH settings. This task produces the tuning recommendations; it does not apply them to the live hosts.
@@ -21,17 +22,17 @@ Create `prompts/tasks/01-tune-llama-service-configs.md` (this file) as the execu
 - MTP: benchmark `unsloth/gpt-oss-120b-GGUF:Q4_K_XL` on beast with `--spec-type none` versus `--spec-type draft-mtp` (llama-bench), and enable MTP in its preset when it helps. Record the result.
 - Do not change the live hosts; the human reviews and applies.
 
-[OUTPUT FORMAT]
+## TASK-OUTPUT
 Provide a summary: files created, per-host tuning recommendation counts, and the MTP benchmark outcome if run.
 No commentary beyond the summary.
 
-[CONTEXT]
+## TASK-CONTEXT
 The owner downloaded the first model set by interest, then benchmarked; some of that set is likely not useful. Nothing is discarded without the owner's decision.
 Beast runs build 10628 (dev) with `--spec-type` supporting `draft-mtp`; athena runs build 10129.
 The owner's benchmark shows `gpt-oss-120b` at 8.42 t/s generation on CPU versus 0.91 t/s for the 70B models — consistent with MTP speculation already active; verify explicitly.
 Feature requirements: `prompts/features/01-endpoints-and-models.md`.
 
-[FILES]
+## TASK-FILES
 - `documents/12-model-retention.md` — new.
 - `prompts/tasks/01-tune-llama-service-configs.md` — new (this file, being the executable task).
 - `dataflow.in/endpoints/beast-models.json` and `athena-models.json` — existing; inspect.

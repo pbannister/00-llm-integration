@@ -1,4 +1,5 @@
-[TASK]
+
+## TASK-DESCRIPTION
 Write the tool-integration document.
 
 Create `documents/09-tool-integration.md` covering:
@@ -11,15 +12,15 @@ Mark the document `verified 2026-08-26` and note which facts are version-depende
 
 Do not modify any file outside `documents/09-tool-integration.md`.
 
-[OUTPUT FORMAT]
+## TASK-OUTPUT
 Provide a summary of the created document and its section list.
 No commentary beyond the summary.
 
-[CONTEXT]
+## TASK-CONTEXT
 Feature requirements: `prompts/features/03-aider-and-vscode.md`.
 Model ids and contexts come from `documents/08-model-catalog.md`; do not restate the catalog independently.
 Historical aider usage was observed in the workspace `.aider.*` files (model-router-setup sessions used `openrouter/openrouter/auto` and `openrouter-gpt-4o`).
 
-[FILES]
+## TASK-FILES
 - `documents/09-tool-integration.md` — new.
 - `documents/08-model-catalog.md` — existing; reference only.

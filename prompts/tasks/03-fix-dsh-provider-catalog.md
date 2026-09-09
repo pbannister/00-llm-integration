@@ -1,4 +1,5 @@
-[TASK]
+
+## TASK-DESCRIPTION
 Reconcile the DeepSeek Harness `beast` provider with the live router and verify one request end to end.
 
 Inspect `sources/config/dsh-settings-beast.example.yaml` and the latest `dataflow.in/endpoints/beast-models.json`.
@@ -15,16 +16,16 @@ Verify the current `~/.dsh/settings.yaml` against this example and record the co
 
 If the router is reachable, run one chat completion against the beast router with a coder model to confirm the endpoint answers, and record the result in the findings record.
 
-[OUTPUT FORMAT]
+## TASK-OUTPUT
 Provide a summary: files created or modified, the count of model entries in the example, and the verification result of the live request.
 No commentary beyond the summary.
 
-[CONTEXT]
+## TASK-CONTEXT
 The DSH `llm-pi-ai` adapter re-reads the settings section per request; no restart is needed.
 Credentials resolve from `apiKeyEnv` through process environment, `~/.dsh/.credentials.yaml`, then `.env` files.
 Feature requirements: `prompts/features/02-dsh-provider-integration.md`, `prompts/features/01-endpoints-and-models.md`.
 
-[FILES]
+## TASK-FILES
 - `sources/config/dsh-settings-beast.example.yaml` — existing; modify.
 - `records/2026-08-26-02-dsh-provider-findings.md` — new.
 - `dataflow.in/endpoints/beast-models.json` — existing; inspect only.
