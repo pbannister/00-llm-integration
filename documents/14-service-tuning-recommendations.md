@@ -98,6 +98,12 @@ Verify the preset key spelling on athena's build (10129) before applying: `llama
 - Measured from GGUF metadata (`scripts/kv-cache-size.py`): q8_0 halves KV memory everywhere; the big levers are gemma-26b at 81920 ctx (12.9 → 6.4 GB) and gemma-12b at 32768 (11.3 → 5.6 GB).
 - APPLIED 2026-08-26: `cache-type-k = q8_0` + `cache-type-v = q8_0` in `[*]` on both routers; `cache-type-v = q4_0` per-preset for gemma-26b/gemma-12b. Analysis in `records/2026-08-26-09-kv-quant-analysis.md`; memory/spill table in `records/2026-08-26-10-kv-quant-applied.md`.
 
+## Upgrade checklist (learned 2026-09-10)
+
+- **Validate preset keys against the new binary before restarting anything**: `scripts/preset-keys-check.sh <llama-server> <config.ini>`. Preset keys are CLI option names, so an upstream rename/removal (0.4.0 dropped `mmap` for `load-mode`) makes the router refuse to start in a systemd restart loop.
+- Dry-run the config on a scratch port, then restart; keep a dated config backup and re-sync `sources/config/*.applied.ini`.
+- See `records/2026-09-10-01-llamacpp-mmap-preset-key-removed.md`.
+
 ## Version review 2026-08-26 (llama.cpp 0.3.0-dev rebuild)
 
 - Verified the tuned configs work unchanged on beast 10657 / athena 10643; aliases and `parallel = 4` intact.
