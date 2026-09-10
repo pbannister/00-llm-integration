@@ -22,6 +22,12 @@ DIRECTORY_SOURCE="$REPOSITORY_ROOT/dataflow.out/site-source"
 DIRECTORY_INPUT_BUILD="$REPOSITORY_ROOT/dataflow.out/site-in"
 DIRECTORY_OUTPUT="$REPOSITORY_ROOT/site.out"
 
+# --- 0. start from an empty output tree --------------------------------------
+# site.out/ is generated-only (gitignored): clear it so renamed or removed
+# pages cannot linger as orphans and get published.
+rm -rf "$DIRECTORY_OUTPUT"
+mkdir -p "$DIRECTORY_OUTPUT"
+
 # --- 1. sanitized mirror of the markdown trees -------------------------------
 rm -rf "$DIRECTORY_SOURCE" "$DIRECTORY_INPUT_BUILD"
 mkdir -p "$DIRECTORY_SOURCE" "$DIRECTORY_INPUT_BUILD"
