@@ -18,6 +18,11 @@ Captured responses: `dataflow.in/endpoints/beast-models.json` (6 models), `dataf
 | beast GPU router | `http://beast.lan:2001/v1` | `/usr/local/etc/config.ini` | 32768 | 1 | none (`--api-key` not set) |
 | beast CPU router | `http://beast.lan:2002/v1` | `/usr/local/etc/config-cpu.ini` | 65536 | 1 | none |
 | athena router | `http://athena.lan:2001/v1` | `/usr/local/etc/config.ini` | 8192 | 4 | none |
+| llama.vscode FIM server | `http://127.0.0.1:8012` (athena) | started by the extension | 8192 | 1 | none |
+
+The FIM server is a single-model `llama-server`, not a router.
+It exists because the extension's FIM-priming call omits `model`, which only a single-model server accepts; see `documents/09-tool-integration.md`.
+It is launched by llama.vscode on model selection and stopped on deselect, so it is not a long-running service.
 
 Preset-file paths verified on the hosts 2026-09-25.
 Both beast routers answer OpenAI-compatible chat completions with `--tools all`.

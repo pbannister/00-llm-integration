@@ -37,11 +37,12 @@ Rules:
 
 The official llama.cpp extension (`ggml-org.llama-vscode`, version 0.0.67 installed on athena) provides inline completion, chat, an agent, embeddings, and tool selection, and can use a remote llama.cpp server.
 
-The extension does not need to start `llama-server` itself: `localStartCommand` is optional, and a model entry carrying only `endpoint` and `aiModel` is contacted over HTTP. The routers therefore serve it directly under the three-tier split:
+`localStartCommand` is optional per model entry: an entry carrying only `endpoint` and `aiModel` is contacted over HTTP, and an entry carrying a command makes the extension start and stop that server itself.
+Chat, tools and embeddings run against the routers, but inline completion needs a server of its own:
 
 | Tier | Purpose | Endpoint | Model |
 | ---- | ---- | ---- | ---- |
-| Local GPU | inline completion (FIM), small and light work | `http://athena.lan:2001` | `coder3` (`coder15` when latency matters most) |
+| Local GPU | inline completion (FIM), small and light work | `http://127.0.0.1:8012` (single-model server, started by the extension) | `coder3` (or `coder15` for lowest latency) |
 | MI25 | more complex chat and agent work | `http://beast.lan:2001` | `coder14` for chat, `gpt-oss-20b` for the agent |
 | CPU | long-running and heavier work | `http://beast.lan:2002` | `gpt-oss-120b` |
 | Embeddings | RAG and `search_source` | `http://athena.lan:2001` | `nomic-embed` |
@@ -49,12 +50,35 @@ The extension does not need to start `llama-server` itself: `localStartCommand` 
 The canonical settings fragment is `sources/config/llama-vscode-settings.json`, applied by `scripts/llama-vscode-config-apply.sh`.
 It defines four envs: the tiered split above, an MI25-only variant with `gpt-oss-20b` for chat and agent, an athena-only offline variant, and a CPU-heavy 120B variant.
 
-Facts that shape the mapping (verified 2026-09-25):
+### Why completion must not run through the router
+
+The extension's FIM context-priming payload and its token-counting call omit the `model` field, because they were written for a single-model `llama serve` on localhost.
+A multi-model llama.cpp router rejects a model-less request.
+
+| Call | Router (multi-model) | Single-model server |
+| ---- | ---- | ---- |
+| `POST /infill` with no `model` | 400 `model name is missing from the request` | 200 |
+| `POST /v1/messages/count_tokens` with no `model` | 400 | 200 |
+
+Both rows verified 2026-09-26 against athena's router and a throwaway single-model server.
+The completion entries therefore carry a `localStartCommand` that starts a single-model server on `127.0.0.1:8012`; the extension launches it when the model is selected and kills it on deselect.
+Two side benefits: the server reports the full preset context (8192, against 2048 per slot through the router's `parallel = 4`), and the model id comes back as the alias, so the extension's model-less priming request succeeds.
+Chat and agent requests do carry `model`, so the routers serve those unchanged.
+
+### VS Code Chat view and the llama-vscode provider
+
+llama.vscode registers a language-model provider (vendor `llama-vscode`) that exposes the models of the selected chat endpoint to the VS Code Chat view.
+Two consequences:
+
+- The provider returns no models when neither a chat nor a tools model is selected, because there is no endpoint to list from. Select an env first, or the picker shows nothing local.
+- Without a `llama-vscode` model chosen in the Chat view's model picker, the Chat view uses a GitHub Copilot cloud model. On a `free_limited_copilot` SKU that fails with 400 `model_not_supported` and the chat appears to hang. This is unrelated to the local routers; pick the local model in the picker.
+
+Facts that shape the mapping (verified 2026-09-25, router compatibility verified 2026-09-26):
 
 - `coder14` returns a `<tools>` text block rather than parsed tool calls, so it is not offered as a tools model.
 - `gpt-oss-20b`, `gpt-oss-120b`, `gemma-e4` and `llama3` all returned parsed `tool_calls`.
-- Athena's `parallel = 4` divides its 8192 context into 2048 tokens per request, so it is kept for FIM rather than chat.
 - The beast GPU router runs `--models-max 1`; asking it for two different models makes them evict each other, which the tiered env avoids by putting the agent model on the CPU router.
+- The athena router's `parallel = 4` divides its 8192 context into 2048 tokens per request, which is why athena serves completion from its own single-model server rather than from the router.
 
 Do not include `/v1` in the extension's `endpoint` value; it appends `/infill` and `/v1/chat/completions` itself.
 Inline completion requires a FIM-capable model; the Qwen2.5-Coder family is the right one in this catalog.
@@ -62,16 +86,22 @@ MCP tools from installed VS Code MCP servers can be selected for the agent.
 
 ## VS Code Chat View
 
-The Chat view is tied to GitHub Copilot. Three options exist for local or OpenAI-compatible providers:
+The Chat view is provided by GitHub Copilot Chat.
+**Correction 2026-09-26:** Copilot Chat is present and authenticated on athena (version 0.67.0, signed in, `free_limited_copilot` SKU), and it does not appear under `~/.vscode/extensions`, so removing an extension directory is not what controls it.
+The earlier "option 3, Copilot suppressed" decision is therefore superseded.
 
-1. **GitHub Copilot BYOK** (bring your own key): Copilot Chat accepts an OpenAI-compatible base URL and key; point it at `http://beast.lan:2001/v1`. Requires a Copilot plan.
-2. **Third-party gateway extensions** that route Copilot Chat to self-hosted models (for example `github-copilot-llm-gateway`, `AgenticProxy` on the marketplace).
-3. **Skip the Chat view**: llama.vscode chat and Cline/Roo Code already cover chat and agentic editing without Copilot.
+Options for local or OpenAI-compatible models, in order of preference for this setup:
 
-**Decision (2026-08-26): option 3.** The owner suppresses Copilot and uses llama.vscode; no Copilot plan is needed. Suppression steps:
+1. **The llama.vscode provider (preferred)**: select an env in llama.vscode, then pick one of its models in the Chat view's model picker. Requests go to the selected chat endpoint's router.
+2. **GitHub Copilot BYOK** (bring your own key): Copilot Chat accepts an OpenAI-compatible base URL and key, but its BYOK provider list (`ollama`, `anthropic`, `gemini`, `xai`, `openai`, `openrouter`, `azure`, `customoai`, `customendpoint`) has no llama.cpp-router entry, so use `customoai` pointed at `http://beast.lan:2001/v1`, or option 1.
+3. **Third-party gateway extensions** that route Copilot Chat to self-hosted models (for example `github-copilot-llm-gateway`, `AgenticProxy` on the marketplace).
+4. **Skip the Chat view**: the llama.vscode chat and agent panels cover chat and agentic editing without Copilot.
 
-- Extensions panel: disable or uninstall the Copilot extensions. On athena the installed Copilot-related extension was `ms-azuretools.vscode-azure-github-copilot` (1.0.231) — **removed 2026-08-26** (extension directory deleted; llama.vscode is unaffected). The standard `github.copilot` / `github.copilot-chat` were not present.
-- Per-workspace fallback: `"github.copilot.enabled": false` in `.vscode/settings.json` keeps the extensions installed but off.
+Pitfalls (verified 2026-09-26):
+
+- The Chat view defaults to a Copilot cloud model. On the free SKU that model can be rejected with 400 `model_not_supported`, so the chat appears to hang until a local model is chosen in the picker.
+- `llama-vscode.chat_models_list` and `llama-vscode.tools_models_list` are separate from the Chat view's picker: the picker lists whatever the selected chat endpoint serves, so the env must be selected first.
+- Per-workspace `"github.copilot.enabled": false` keeps Copilot off where preferred.
 
 Do not run overlapping agent UIs on the same project simultaneously; pick one surface per task (DSH for agentic sessions, aider in the CLI, llama.vscode in the editor).
 
