@@ -1,0 +1,212 @@
+{
+    "llama-vscode.enabled": true,
+    "llama-vscode.auto": true,
+    "llama-vscode.ask_upgrade_llamacpp_hours": 72000,
+    "llama-vscode.env_start_last_used": true,
+    "llama-vscode.env_start_last_used_confirm": false,
+
+    "llama-vscode.completion_models_list": [
+        {
+            "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - FIM)",
+            "endpoint": "http://athena.lan:2001",
+            "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+            "isKeyRequired": false
+        },
+        {
+            "name": "Qwen2.5-Coder-1.5B Q8 (Athena GPU - fast FIM)",
+            "endpoint": "http://athena.lan:2001",
+            "aiModel": "Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q8_0",
+            "isKeyRequired": false
+        },
+        {
+            "name": "Qwen2.5-Coder-14B Q4 (Beast MI25 - FIM fallback)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M",
+            "isKeyRequired": false
+        }
+    ],
+
+    "llama-vscode.chat_models_list": [
+        {
+            "name": "Qwen2.5-Coder-14B Q4 (Beast MI25 - chat)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M",
+            "isKeyRequired": false
+        },
+        {
+            "name": "Qwen3.5-9B Q4 (Beast MI25 - 32K)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "unsloth/Qwen3.5-9B-GGUF:Q4_K_M",
+            "isKeyRequired": false
+        },
+        {
+            "name": "gemma-4-12B QAT (Beast MI25 - 32K)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "unsloth/gemma-4-12B-it-qat-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        },
+        {
+            "name": "gemma-4-26B-A4B (Beast MI25 - 80K context)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "unsloth/gemma-4-26B-A4B-it-qat-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        },
+        {
+            "name": "gpt-oss-120B (Beast CPU - long running)",
+            "endpoint": "http://beast.lan:2002",
+            "aiModel": "unsloth/gpt-oss-120b-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        },
+        {
+            "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - light)",
+            "endpoint": "http://athena.lan:2001",
+            "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+            "isKeyRequired": false
+        }
+    ],
+
+    "llama-vscode.tools_models_list": [
+        {
+            "name": "gpt-oss-120B (Beast CPU - agent, long running)",
+            "endpoint": "http://beast.lan:2002",
+            "aiModel": "unsloth/gpt-oss-120b-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        },
+        {
+            "name": "gpt-oss-20B (Beast MI25 - agent, fast)",
+            "endpoint": "http://beast.lan:2001",
+            "aiModel": "unsloth/gpt-oss-20b-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        },
+        {
+            "name": "gemma-4-E4B QAT (Athena GPU - agent fallback)",
+            "endpoint": "http://athena.lan:2001",
+            "aiModel": "unsloth/gemma-4-E4B-it-qat-GGUF:Q4_K_XL",
+            "isKeyRequired": false
+        }
+    ],
+
+    "llama-vscode.embeddings_models_list": [
+        {
+            "name": "Nomic-Embed-Text-V2 Q8 (Athena GPU)",
+            "endpoint": "http://athena.lan:2001",
+            "aiModel": "ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0",
+            "isKeyRequired": false
+        }
+    ],
+
+    "llama-vscode.envs_list": [
+        {
+            "name": "Tiered - Athena FIM, MI25 chat, CPU 120B agent",
+            "description": "Light FIM on the local RX 5500 XT, complex chat on the beast MI25, long-running agent and tool work on the 120B CPU router. The MI25 is asked for one model only, so its GPU slot never evicts.",
+            "completion": {
+                "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - FIM)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+                "isKeyRequired": false
+            },
+            "chat": {
+                "name": "Qwen2.5-Coder-14B Q4 (Beast MI25 - chat)",
+                "endpoint": "http://beast.lan:2001",
+                "aiModel": "bartowski/Qwen2.5-Coder-14B-Instruct-GGUF:Q4_K_M",
+                "isKeyRequired": false
+            },
+            "tools": {
+                "name": "gpt-oss-120B (Beast CPU - agent, long running)",
+                "endpoint": "http://beast.lan:2002",
+                "aiModel": "unsloth/gpt-oss-120b-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "embeddings": {
+                "name": "Nomic-Embed-Text-V2 Q8 (Athena GPU)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0",
+                "isKeyRequired": false
+            }
+        },
+        {
+            "name": "MI25 single model - gpt-oss-20B chat and agent",
+            "description": "One resident MI25 model serves chat and agent, so the GPU router never reloads between turns. Fastest agent loop when the CPU router is too slow.",
+            "completion": {
+                "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - FIM)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+                "isKeyRequired": false
+            },
+            "chat": {
+                "name": "gpt-oss-20B (Beast MI25 - agent, fast)",
+                "endpoint": "http://beast.lan:2001",
+                "aiModel": "unsloth/gpt-oss-20b-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "tools": {
+                "name": "gpt-oss-20B (Beast MI25 - agent, fast)",
+                "endpoint": "http://beast.lan:2001",
+                "aiModel": "unsloth/gpt-oss-20b-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "embeddings": {
+                "name": "Nomic-Embed-Text-V2 Q8 (Athena GPU)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0",
+                "isKeyRequired": false
+            }
+        },
+        {
+            "name": "Athena only - local GPU, beast offline",
+            "description": "Completion, chat, and a small agent all on the RX 5500 XT when beast is unreachable. Athena splits its 8192 context over four slots, so each request gets 2048 tokens.",
+            "completion": {
+                "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - FIM)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+                "isKeyRequired": false
+            },
+            "chat": {
+                "name": "Llama-3.2-3B Q8 (Athena GPU)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "unsloth/Llama-3.2-3B-Instruct-GGUF:Q8_0",
+                "isKeyRequired": false
+            },
+            "tools": {
+                "name": "gemma-4-E4B QAT (Athena GPU - agent fallback)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "unsloth/gemma-4-E4B-it-qat-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "embeddings": {
+                "name": "Nomic-Embed-Text-V2 Q8 (Athena GPU)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0",
+                "isKeyRequired": false
+            }
+        },
+        {
+            "name": "CPU heavy - 120B chat and agent",
+            "description": "Long-running planning and architecture on the beast CPU router. Slow, but the largest local model at a 65536 context.",
+            "completion": {
+                "name": "Qwen2.5-Coder-3B Q8 (Athena GPU - FIM)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0",
+                "isKeyRequired": false
+            },
+            "chat": {
+                "name": "gpt-oss-120B (Beast CPU - long running)",
+                "endpoint": "http://beast.lan:2002",
+                "aiModel": "unsloth/gpt-oss-120b-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "tools": {
+                "name": "gpt-oss-120B (Beast CPU - agent, long running)",
+                "endpoint": "http://beast.lan:2002",
+                "aiModel": "unsloth/gpt-oss-120b-GGUF:Q4_K_XL",
+                "isKeyRequired": false
+            },
+            "embeddings": {
+                "name": "Nomic-Embed-Text-V2 Q8 (Athena GPU)",
+                "endpoint": "http://athena.lan:2001",
+                "aiModel": "ggml-org/Nomic-Embed-Text-V2-GGUF:Q8_0",
+                "isKeyRequired": false
+            }
+        }
+    ]
+}
