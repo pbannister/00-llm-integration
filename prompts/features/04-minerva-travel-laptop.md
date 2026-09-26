@@ -28,10 +28,10 @@ Record the findings in `records/` and update `documents/07-endpoints-map.md`.
 ## Model Candidates (from the existing catalog)
 
 - `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q8_0` — recommended default: coding + editing, FIM-capable; fits the shared-memory iGPU comfortably.
-- `unsloth/gemma-4-E2B-it-qat-GGUF:UD-Q4_K_XL` — 2B QAT gemma, small and capable.
+- `unsloth/gemma-4-E2B-it-qat-GGUF:Q4_K_XL` — 2B QAT gemma, small and capable.
 - `unsloth/Qwen3.5-4B-GGUF:Q4_K_M` — general chat alternative.
 - `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q8_0` — minimal fallback; fastest.
-- `unsloth/gemma-4-E4B-it-qat-GGUF:UD-Q4_K_XL` — 4B, upper bound for the laptop.
+- `unsloth/gemma-4-E4B-it-qat-GGUF:Q4_K_XL` — 4B, upper bound for the laptop.
 
 Keep the travel model at or below 4B parameters for battery life and thermals.
 

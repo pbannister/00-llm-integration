@@ -18,9 +18,9 @@ The LLM does not load these files as project rules.
 - `09-tool-integration.md` — aider, llama.vscode, and VS Code Chat usage against the local routers.
 - `10-routing-policy.md` — GPU-fast versus CPU-background execution policy.
 - `11-minerva-travel-plan.md` — the offline laptop plan (hardware verified 2026-08-26).
-- `12-model-retention.md` — model retention analysis (discard candidates, none discarded yet).
+- `12-model-retention.md` — model retention analysis (discard executed 2026-08-26; current preset set noted 2026-09-25).
 - `13-mtp-and-rag.md` — MTP and RAG explainers with local support.
-- `14-service-tuning-recommendations.md` — draft llama.cpp preset tuning recommendations (task 01 output, not yet applied).
+- `14-service-tuning-recommendations.md` — llama.cpp preset tuning applied 2026-08-26, with the current preset set noted 2026-09-25.
 
 ## Canonical Files
 

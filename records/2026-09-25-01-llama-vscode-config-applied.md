@@ -101,7 +101,7 @@ The canonical fragment is `sources/config/llama-vscode-settings.json`. Four envs
 ## Open items
 
 - The OpenRouter entries that previously sat in `tools_models_list` were dropped when that list was replaced. They remain in the backup if wanted.
-- `documents/07-endpoints-map.md`, `documents/08-model-catalog.md`, `documents/09-tool-integration.md`, and `prompts/features/01-endpoints-and-models.md` and `03-aider-and-vscode.md` still describe the removed beast models. The owner chose not to update them in this change; they are now the main stale artifacts.
+- **Resolved same day (2026-09-25).** `documents/07-endpoints-map.md`, `documents/08-model-catalog.md`, `documents/09-tool-integration.md`, `documents/10-routing-policy.md`, `documents/12-model-retention.md`, `documents/14-service-tuning-recommendations.md`, `documents/README.md`, and `prompts/features/01-endpoints-and-models.md`, `03-aider-and-vscode.md`, `04-minerva-travel-laptop.md` were all brought to the current preset set, and the captures were refreshed from the live routers. The owner confirmed the reduced model set is deliberate: it came from an earlier exercise identifying the best models for this purpose.
 - Health checks (`llama-vscode.health_check_*_enabled`) were left at their defaults; enabling them would refresh model status in the UI but does not change the token-limit fallback described above.
 - Athena's `parallel = 4` was left as-is by owner choice.
 

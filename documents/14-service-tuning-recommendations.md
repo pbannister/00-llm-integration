@@ -120,3 +120,23 @@ After recurring amdgpu ring timeouts / Vulkan device loss on the MI25 (60 device
 - CPU heavyweights unchanged (`ngl = 0`).
 - Gotcha: the router snapshots `config.ini` at `llama.service` start — edits need `sudo systemctl restart llama.service`.
 - Athena unchanged; revisit if athena's GPU shows the same resets.
+
+## Update 2026-09-25 — the preset set changed after this application
+
+The alias and promotion tables above record what was applied on 2026-08-26; they are not the current preset set.
+The beast cache and presets were trimmed again on 2026-09-03 (`records/2026-09-03-04-cpu-gpu-router-split-and-cache-trim.md`), and the routers are split into a GPU service on `:2001` and a CPU service on `:2002`.
+
+Current presets, verified 2026-09-25:
+
+| Host / router | Presets |
+| ---- | ---- |
+| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b`, `qwen38` |
+| beast `llama-cpu.service` :2002 (CPU) | `gpt-oss-120b` |
+| athena :2001 | `coder3`, `coder15`, `llama3`, `gemma-e4`, `qwen27`, `nomic-embed`, `coder32-fallback`, `r1-32b-fallback` |
+
+The aliases `coder32`, `devstral`, `r1-14b`, `r1-70b` and `llama70` no longer exist on any router.
+`gpt-oss-120b` is served only by `:2002`; `:2001` does not answer for it.
+Roles and contexts are in `documents/08-model-catalog.md`.
+Note also that `config.ini` writes the repository quant selector (`:UD-Q4_K_XL`) while `GET /v1/models` reports the resolved quant (`:Q4_K_XL`); clients must use the reported id or the alias.
+
+The MTP finding in section 4 still stands: llama.cpp auto-enables the gpt-oss built-in MTP head, and no `spec-type` preset line is needed.

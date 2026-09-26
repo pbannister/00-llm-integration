@@ -5,6 +5,9 @@ Nothing is discarded without the owner's decision.
 The first model set was downloaded by interest, then benchmarked (see `sources/models/_combine-amd-rx-5500.md` and `sources/models/logs/`).
 GGUF files live in the HuggingFace cache on each host (`HF_HUB_CACHE=/home/preston/.cache/huggingface/hub` on beast; default cache on athena).
 
+**The tables below describe the 2026-08-26 state.** The beast cache was trimmed again on 2026-09-03, so several rows marked "keep" are no longer presets.
+For the current preset set see `documents/08-model-catalog.md` and the dated update at the end of this file.
+
 ## Conventions (owner, 2026-09-03)
 
 - **Full archive**: everything ever downloaded is backed up by rsyncing the HF
@@ -121,3 +124,18 @@ Notes: the 120B at 8.42 t/s on CPU versus 0.91 t/s for the 70B models is the sig
 ## Update 2026-09-03 — qwen27 re-promoted on athena
 
 `bartowski/Qwen3.8-27B-GGUF:Q4_K_M` (discard candidate 2026-08-26: "none fits the GPU, CPU-only and slow") is re-promoted as the athena `qwen27` preset — athena's GPU was fixed (`records/2026-09-03-01-athena-gpu-fixes-qwen27-llamacpp-current.md`), making an 8 GB-VRAM GPU + CPU split viable. **Correction 2026-09-03** (`records/2026-09-03-02-athena-qwen27-load-fixes.md`): the preset resolves the **batiai** repo; the `/backups/huggingface/` copy is `bartowski` (a different repo — the backup stays archive-only and the batiai files were web-downloaded). It remains a discard candidate on beast (beast's Qwen3.8 role is the `qwen38` Flash-Next CPU preset, which has no backup anywhere and needs a first-time ~119 G download).
+
+## Update 2026-09-25 — current preset set
+
+The beast cache was trimmed on 2026-09-03 (`records/2026-09-03-04-cpu-gpu-router-split-and-cache-trim.md`), so the 2026-08-26 "keep" tables above are stale.
+The current preset set, verified against the refreshed captures on 2026-09-25, is:
+
+| Host / router | Presets |
+| ---- | ---- |
+| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b`, `qwen38` |
+| beast `llama-cpu.service` :2002 (CPU) | `gpt-oss-120b` |
+| athena :2001 | `coder3`, `coder15`, `llama3`, `gemma-e4`, `qwen27`, `nomic-embed`, `coder32-fallback`, `r1-32b-fallback` |
+
+Removed from beast on 2026-09-03 (still in the full archive): `coder32`, `devstral`, `r1-14b`, `r1-70b`, `llama70`, and the gemma E2B/E4B copies.
+`coder32` survives on athena as the CPU fallback `coder32-fallback`.
+The role assignment for each current preset is in `documents/08-model-catalog.md`.

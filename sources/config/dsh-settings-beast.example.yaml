@@ -7,11 +7,11 @@
 # in the dsh launch environment. llama.cpp ignores Authorization until a router
 # runs with --api-key; if that is added, use the same values here.
 #
-# Facts verified 2026-08-26 from dataflow.in/endpoints/ (after the llama.cpp
-# 0.3.0-dev rebuild and the applied tuning). Ids are the router ALIASES, which
-# now exist on the live routers. contextWindow matches each preset's ctx-size;
-# maxTokens sits well under it. Bare id-only entries inherit 262144/32768
-# defaults that exceed every preset — do not use them.
+# Facts verified 2026-09-25 from dataflow.in/endpoints/ (re-checked after the
+# 2026-09-03 cache trim; aliases and contexts unchanged). Ids are the router
+# ALIASES, which now exist on the live routers. contextWindow matches each
+# preset's ctx-size; maxTokens sits well under it. Bare id-only entries inherit
+# 262144/32768 defaults that exceed every preset — do not use them.
 #
 # The nomic-embed model (athena) is intentionally NOT listed here: it serves
 # /v1/embeddings on the router, and DSH is a chat/agent harness. Call
