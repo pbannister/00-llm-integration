@@ -1,0 +1,3 @@
+--- amdgpu-dkms ---
+Status: install ok installed
+Version: 1:6.19.14.31400100-2377056.24.04

@@ -1,0 +1,31 @@
+#!/home/preston/rocm-therock/bin/python
+"""Run Python with TheRock ROCm preloaded, then execute a script.
+
+Why this exists: the TheRock torch wheels have a RUNPATH baked to a
+container build path that does not exist on this host, so libtorch_hip.so
+cannot resolve libMIOpen/libhipfft/... on its own. Importing rocm_sdk and
+calling initialize_process() preloads them with RTLD_GLOBAL and wires up
+the rocm_kpack runtime that serves the gfx900 device kernels.
+
+Usage:
+    therock-python script.py [args...]
+"""
+import os
+import runpy
+import sys
+
+# Preload ROCm before anything imports torch.
+import rocm_sdk
+
+rocm_sdk.initialize_process()
+
+if len(sys.argv) < 2:
+    sys.exit("usage: therock-python <script.py> [args...]")
+
+target = sys.argv[1]
+sys.argv = sys.argv[1:]
+
+if not os.path.exists(target):
+    sys.exit("therock-python: no such file: %s" % target)
+
+runpy.run_path(target, run_name="__main__")
