@@ -1,5 +1,11 @@
 
 ## TASK-DESCRIPTION
+- Modify: `scripts/endpoints-capture.sh`
+- Modify: `dataflow.in/endpoints/beast-models.json`
+- Modify: `dataflow.in/endpoints/athena-models.json`
+- Create: `documents/07-endpoints-map.md`
+- Create: `documents/08-model-catalog.md`
+
 Refresh the live endpoint captures and derive the endpoints map and model catalog documents.
 
 Run `make capture` from the repository root to refresh `dataflow.in/endpoints/beast-models.json` and `dataflow.in/endpoints/athena-models.json` from `GET /v1/models` on both routers.
@@ -22,8 +28,25 @@ Feature requirements: `prompts/features/01-endpoints-and-models.md`.
 Generated documents must carry the provenance header rule from `prompts/03-conventions.md` section 6.1 only when a generator produced them; these are hand-written from captures, so they instead carry a `verified <date>` marker per the live-state discipline in `README.md`.
 
 ## TASK-FILES
-- `scripts/endpoints-capture.sh` — existing; invoked by `make capture`.
-- `dataflow.in/endpoints/beast-models.json` — existing; refresh via `make capture`.
-- `dataflow.in/endpoints/athena-models.json` — existing; refresh via `make capture`.
-- `documents/07-endpoints-map.md` — new.
-- `documents/08-model-catalog.md` — new.
+
+| Operation | Path |
+|---|---|
+| modify | `scripts/endpoints-capture.sh` |
+| modify | `dataflow.in/endpoints/beast-models.json` |
+| modify | `dataflow.in/endpoints/athena-models.json` |
+| create | `documents/07-endpoints-map.md` |
+| create | `documents/08-model-catalog.md` |
+
+## TASK-VERIFY
+- Run: `make test` from the repository root.
+- Expected: exit status 0.
+
+## TASK-FEATURES
+- `prompts/features/01-endpoints-and-models.md`
+
+## TASK-ACCEPTANCE
+- `ENDPOINTS-R001`
+- `ENDPOINTS-R002`
+- `ENDPOINTS-R003`
+
+OUTPUT: the content of `documents/07-endpoints-map.md`, as TASK-OUTPUT describes, and nothing else.

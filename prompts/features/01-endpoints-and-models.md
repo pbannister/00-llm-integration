@@ -1,7 +1,31 @@
 # Feature: Endpoints and Models
 
+## Purpose
+
 Defines the live inference endpoints, the model catalog, and the execution roles.
 This is the base fact source for all other features.
+
+## Requirements
+
+- `ENDPOINTS-R001` — Clients must use the router's reported model id or its alias; the `UD-` preset-key form fails with `model not found`.
+- `ENDPOINTS-R002` — `GET /v1/models` is the source of truth for model ids; a preset section key and the reported id can differ.
+- `ENDPOINTS-R003` — Only models that emit parsed `tool_calls` belong in an agent loop. Verified 2026-09-25: `gpt-oss-20b`, `gpt-oss-120b`, `gemma-e4` and `llama3` do; `coder14` returns a `<tools>` text block instead.
+- `ENDPOINTS-R004` — Small and light work uses the local athena GPU.
+- `ENDPOINTS-R005` — Interactive complex work uses the beast MI25.
+- `ENDPOINTS-R006` — Long-running and heavier work uses the 120B on beast's CPU, leaving the MI25 free; the two run concurrently as separate routers.
+- `ENDPOINTS-R007` — Any task that states model ids, contexts, or ports must verify them against the latest `dataflow.in/endpoints/` capture or a live `GET /v1/models`, and mark the document `verified <date>`.
+- `ENDPOINTS-R008` — Do not hand-copy model lists into documents; derive them from the captures.
+- `ENDPOINTS-R009` — The full live lists are captured, not hand-written; refresh them with `make capture`.
+
+## Behavior
+
+- Three llama.cpp router-mode servers answer OpenAI-compatible chat completions with `--tools all` on the house LAN.
+- A client that uses a reported id or an alias completes a chat turn; one that uses the `UD-` preset-key form receives `model not found`.
+- The routing policy is described in `documents/10-routing-policy.md` and the three-tier tool mapping in `documents/09-tool-integration.md`.
+
+## Dependencies
+
+- None.
 
 ## Endpoints
 
@@ -11,15 +35,13 @@ Three llama.cpp router-mode servers answer on the house LAN:
 - `http://beast.lan:2002/v1` — heavy server, CPU router. `unsloth/gpt-oss-120b-GGUF` at `ngl = 0`, `numa = distribute`, 65536 context, `parallel = 1`.
 - `http://athena.lan:2001/v1` — desktop server. RX 5500 XT 8 GB VRAM, Ryzen 9 5900X (12 threads), 128 GB RAM, `parallel = 4`. Default context 8192, which is 2048 tokens per request after the slot split.
 
-All three answer OpenAI-compatible chat completions with `--tools all`.
-Model ids are the resolved preset names or `hf-repo` cache names, and each preset also carries a short alias; `GET /v1/models` is the source of truth.
+Model ids are the resolved preset names or `hf-repo` cache names, and each preset also carries a short alias.
 Captured responses live in `dataflow.in/endpoints/`; see `documents/07-endpoints-map.md`.
 
 ## Id Resolution
 
 A preset section key and the router's reported model id can differ.
 `config.ini` writes the repository quant selector (`unsloth/gpt-oss-20b-GGUF:UD-Q4_K_XL`), while `GET /v1/models` reports the resolved file quant (`unsloth/gpt-oss-20b-GGUF:Q4_K_XL`).
-Clients must use the reported id or the alias; the `UD-` form fails with `model not found`.
 
 ## Catalog and Execution Roles
 
@@ -33,19 +55,7 @@ Beast GPU-resident on :2001: `coder14` (`bartowski/Qwen2.5-Coder-14B-Instruct-GG
 
 Beast CPU-heavy on :2002: `gpt-oss-120b` (`unsloth/gpt-oss-120b-GGUF:Q4_K_XL`, 65536) for planning, long-running agent loops, and large background tasks.
 
-Only models that emit parsed `tool_calls` belong in an agent loop.
-Verified 2026-09-25: `gpt-oss-20b`, `gpt-oss-120b`, `gemma-e4` and `llama3` do; `coder14` returns a `<tools>` text block instead.
-
-The full live lists are captured, not hand-written: refresh with `make capture`.
-
 ## Routing Policy
 
-- Small and light work uses the local athena GPU.
-- Interactive complex work uses the beast MI25.
-- Long-running and heavier work uses the 120B on beast's CPU, leaving the MI25 free; the two run concurrently as separate routers.
-- See `documents/10-routing-policy.md` for the full policy and `documents/09-tool-integration.md` for the three-tier tool mapping.
-
-## Requirement: facts come from captures
-
-- Any task that states model ids, contexts, or ports must verify them against the latest `dataflow.in/endpoints/` capture or a live `GET /v1/models`, and mark the document `verified <date>`.
-- Do not hand-copy model lists into documents; derive them from the captures.
+- Long work and the MI25 run concurrently as separate routers, so the two never contend for the GPU.
+- The full policy is in `documents/10-routing-policy.md`; the three-tier tool mapping is in `documents/09-tool-integration.md`.

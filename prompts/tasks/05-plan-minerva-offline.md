@@ -1,5 +1,7 @@
 
 ## TASK-DESCRIPTION
+- Create: `documents/11-minerva-travel-plan.md`
+
 Plan the minerva offline laptop deployment.
 
 Connect to `minerva.lan` over SSH (per the homelab inventory) and discover the hardware: GPU (`lspci | grep -iE 'vga|3d'`, `vulkaninfo --summary` if Vulkan is present), RAM (`free -h`), and disk (`df -h ~`).
@@ -7,7 +9,7 @@ Connect to `minerva.lan` over SSH (per the homelab inventory) and discover the h
 Create `documents/11-minerva-travel-plan.md` containing:
 
 - The verified hardware facts with the date.
-- The chosen travel model from the candidates in `prompts/features/04-minerva-travel-laptop.md`, with its exact GGUF name, size on disk, expected context, and the rationale.
+- The chosen travel model from the candidates in `prompts/features/05-minerva-travel-laptop.md`, with its exact GGUF name, size on disk, expected context, and the rationale.
 - The deployment shape: llama.cpp install (backend chosen from the GPU), a single-model or small-router preset on `127.0.0.1:2001`, and the aider and llama.vscode invocations pointing at `http://127.0.0.1:2001/v1`.
 - The offline checklist: predownload the GGUF, verify the local server answers, and confirm the tools work with the laptop's network disabled.
 
@@ -19,9 +21,26 @@ Provide a summary of the created document and the verified hardware facts.
 No commentary beyond the summary.
 
 ## TASK-CONTEXT
-Feature requirements: `prompts/features/04-minerva-travel-laptop.md`.
+Feature requirements: `prompts/features/05-minerva-travel-laptop.md`.
 `minerva.lan` is 192.168.8.186, WiFi-attached, with SSH per `homelab/sources/inventory/hosts.yaml`.
 The homelab Ansible inventory may be used for provisioning once specs are known.
 
 ## TASK-FILES
-- `documents/11-minerva-travel-plan.md` — new.
+
+| Operation | Path |
+|---|---|
+| create | `documents/11-minerva-travel-plan.md` |
+
+## TASK-VERIFY
+- Run: `make test` from the repository root.
+- Expected: exit status 0.
+
+## TASK-FEATURES
+- `prompts/features/05-minerva-travel-laptop.md`
+
+## TASK-ACCEPTANCE
+- `MINERVA-R001`
+- `MINERVA-R002`
+- `MINERVA-R003`
+
+OUTPUT: the content of `documents/11-minerva-travel-plan.md`, as TASK-OUTPUT describes, and nothing else.

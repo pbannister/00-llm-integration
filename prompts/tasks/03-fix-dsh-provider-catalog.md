@@ -1,5 +1,9 @@
 
 ## TASK-DESCRIPTION
+- Modify: `sources/config/dsh-settings-beast.example.yaml`
+- Create: `records/2026-08-26-02-dsh-provider-findings.md`
+- Inspect: `dataflow.in/endpoints/beast-models.json`
+
 Reconcile the DeepSeek Harness `beast` provider with the live router and verify one request end to end.
 
 Inspect `sources/config/dsh-settings-beast.example.yaml` and the latest `dataflow.in/endpoints/beast-models.json`.
@@ -23,9 +27,30 @@ No commentary beyond the summary.
 ## TASK-CONTEXT
 The DSH `llm-pi-ai` adapter re-reads the settings section per request; no restart is needed.
 Credentials resolve from `apiKeyEnv` through process environment, `~/.dsh/.credentials.yaml`, then `.env` files.
-Feature requirements: `prompts/features/02-dsh-provider-integration.md`, `prompts/features/01-endpoints-and-models.md`.
+Feature requirements: `prompts/features/03-dsh-provider-integration.md`, `prompts/features/01-endpoints-and-models.md`.
 
 ## TASK-FILES
-- `sources/config/dsh-settings-beast.example.yaml` — existing; modify.
-- `records/2026-08-26-02-dsh-provider-findings.md` — new.
-- `dataflow.in/endpoints/beast-models.json` — existing; inspect only.
+
+| Operation | Path |
+|---|---|
+| modify | `sources/config/dsh-settings-beast.example.yaml` |
+| create | `records/2026-08-26-02-dsh-provider-findings.md` |
+| inspect | `dataflow.in/endpoints/beast-models.json` |
+
+## TASK-VERIFY
+- Run: `make test` from the repository root.
+- Expected: exit status 0.
+
+## TASK-FEATURES
+- `prompts/features/01-endpoints-and-models.md`
+- `prompts/features/03-dsh-provider-integration.md`
+
+## TASK-ACCEPTANCE
+- `ENDPOINTS-R001`
+- `ENDPOINTS-R002`
+- `ENDPOINTS-R003`
+- `DSH-R001`
+- `DSH-R002`
+- `DSH-R003`
+
+OUTPUT: the content of `records/2026-08-26-02-dsh-provider-findings.md`, as TASK-OUTPUT describes, and nothing else.

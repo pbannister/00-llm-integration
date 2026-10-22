@@ -1,5 +1,8 @@
 
 ## TASK-DESCRIPTION
+- Create: `documents/09-tool-integration.md`
+- Modify: `documents/08-model-catalog.md`
+
 Write the tool-integration document.
 
 Create `documents/09-tool-integration.md` covering:
@@ -17,10 +20,27 @@ Provide a summary of the created document and its section list.
 No commentary beyond the summary.
 
 ## TASK-CONTEXT
-Feature requirements: `prompts/features/03-aider-and-vscode.md`.
+Feature requirements: `prompts/features/04-aider-and-vscode.md`.
 Model ids and contexts come from `documents/08-model-catalog.md`; do not restate the catalog independently.
 Historical aider usage was observed in the workspace `.aider.*` files (model-router-setup sessions used `openrouter/openrouter/auto` and `openrouter-gpt-4o`).
 
 ## TASK-FILES
-- `documents/09-tool-integration.md` — new.
-- `documents/08-model-catalog.md` — existing; reference only.
+
+| Operation | Path |
+|---|---|
+| create | `documents/09-tool-integration.md` |
+| modify | `documents/08-model-catalog.md` |
+
+## TASK-VERIFY
+- Run: `make test` from the repository root.
+- Expected: exit status 0.
+
+## TASK-FEATURES
+- `prompts/features/04-aider-and-vscode.md`
+
+## TASK-ACCEPTANCE
+- `AIDER-R001`
+- `AIDER-R002`
+- `AIDER-R003`
+
+OUTPUT: the content of `documents/09-tool-integration.md`, as TASK-OUTPUT describes, and nothing else.

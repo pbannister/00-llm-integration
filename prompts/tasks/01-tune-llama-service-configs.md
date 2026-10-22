@@ -1,5 +1,10 @@
 
 ## TASK-DESCRIPTION
+- Create: `documents/12-model-retention.md`
+- Create: `prompts/tasks/01-tune-llama-service-configs.md`
+- Inspect: `dataflow.in/endpoints/beast-models.json`
+- Inspect: `sources/models/_combine-amd-rx-5500.md`
+
 Sort the llama.cpp service configuration on beast and athena before any client-side (DSH) work.
 
 The owner's ordering decision: llama service config first, then the DSH settings. This task produces the tuning recommendations; it does not apply them to the live hosts.
@@ -33,7 +38,24 @@ The owner's benchmark shows `gpt-oss-120b` at 8.42 t/s generation on CPU versus 
 Feature requirements: `prompts/features/01-endpoints-and-models.md`.
 
 ## TASK-FILES
-- `documents/12-model-retention.md` — new.
-- `prompts/tasks/01-tune-llama-service-configs.md` — new (this file, being the executable task).
-- `dataflow.in/endpoints/beast-models.json` and `athena-models.json` — existing; inspect.
-- `sources/models/_combine-amd-rx-5500.md` and `sources/models/logs/` — existing; inspect.
+
+| Operation | Path |
+|---|---|
+| create | `documents/12-model-retention.md` |
+| create | `prompts/tasks/01-tune-llama-service-configs.md` |
+| inspect | `dataflow.in/endpoints/beast-models.json` |
+| inspect | `sources/models/_combine-amd-rx-5500.md` |
+
+## TASK-VERIFY
+- Run: `make test` from the repository root.
+- Expected: exit status 0.
+
+## TASK-FEATURES
+- `prompts/features/01-endpoints-and-models.md`
+
+## TASK-ACCEPTANCE
+- `ENDPOINTS-R001`
+- `ENDPOINTS-R002`
+- `ENDPOINTS-R003`
+
+OUTPUT: the content of `documents/12-model-retention.md`, as TASK-OUTPUT describes, and nothing else.
