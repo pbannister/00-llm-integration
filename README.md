@@ -1,61 +1,48 @@
-# LLM Integration
+# LLM Integration — MOVED
 
-This project owns the local-LLM integration story for the home subnet: which models run where, how each tool reaches them, and the policies for splitting work between GPU-fast and CPU-heavy models.
+**This repository is archived. The project moved to the homelab.**
 
-## Scope
+Merged 2026-11-24 into `00-homelab` (`github.com/pbannister/00-homelab`),
+under `sources/projects/llm-integration/`.
 
-The project covers:
+The routers, model catalog, and client configuration are homelab
+infrastructure. The homelab already owned the inventory, the Ansible tooling,
+and the publishing path, so keeping the LLM work separate meant the inventory
+and the deployment drifted apart. The merge puts them in one place.
 
-- The three inference hosts: `beast.lan` (MI25 16 GB + dual Xeon 256 GB), `athena.lan` (RX 5500 XT 8 GB + Ryzen 9 5900X + 128 GB), and `minerva.lan` (travel laptop, specs pending).
-- The llama.cpp router services on `beast.lan:2001` and `athena.lan:2001`.
-- Client tool integration: DeepSeek Harness (`llm-pi-ai` providers), aider, llama.vscode, VS Code Chat.
-- The execution policy: GPU-resident fast models for interactive work; CPU-heavy models (`gpt-oss-120b`) for large repeated background tasks so the GPU stays free.
-- The offline travel plan for `minerva.lan`.
+## Where things are now
 
-The router deployment itself (systemd, presets, Ansible) is owned by the sibling `model-router` project; this project owns the live model catalog and the client-side consumption of those endpoints. `sources/models/` holds imported copies of `~/models/` material for reference.
+| What | New location |
+|---|---|
+| Documents | `sources/projects/llm-integration/documents/` |
+| Service driver and scripts | `sources/projects/llm-integration/scripts/` |
+| Tracked presets and client config | `sources/projects/llm-integration/sources/` |
+| Tests | `sources/projects/llm-integration/tests/` |
+| Records | `sources/projects/llm-integration/records/` |
+| Endpoint captures | `sources/projects/llm-integration/dataflow.in/endpoints/` |
 
-## Reading Order
+The four shared-skeleton documents (`00-pattern-of-interaction.md`,
+`01-async-worktree.md`, `02-tool-universe.md`, `03-conversation-summary.md`)
+live in the homelab's own `documents/` directory. The project-pages summary
+was dropped in favour of the homelab's canonical
+`documents/09-project-pages-conventions.md`.
 
-The LLM should begin by reading these files in order (the numeric prefix marks load order):
+## Commands
 
-1. `prompts/01-contract.md`
-2. `prompts/02-workflow.md`
-3. `prompts/03-conventions.md`
+Run from the homelab repository root:
 
-These define the interaction rules, workflow, and formatting conventions. The LLM must follow the workflow defined in `prompts/02-workflow.md` for every task.
+```sh
+make llm-test                 # the project's own tests
+make llm-site                 # build the project pages
+make llama-service-dry-run    # check all three routers, change nothing
+make llama-service            # install/configure all three routers
+make backup-models            # archive model caches to /backups
+```
 
-Human contributors should begin with:
+## Why archived rather than deleted
 
-- `prompts/README.md`
-- `documents/README.md`
-- `documents/07-endpoints-map.md` (the canonical live map)
+The history is real and worth keeping: the router fixes, the model review, the
+measured benchmarks, and the incidents behind them. The homelab is the working
+copy; this repository is the record of how the work got there.
 
-Note there are rules meant only to constrain Aider behavior:
-
-- `tools/aider-rules.md` (Aider users only)
-
-## Top-Level Map
-
-- `README.md` — this overview.
-- `TODO.md` — pending and completed project tasks.
-- `prompts/` — LLM interaction rules, common requirements, feature requirements, and task definitions.
-- `documents/` — human-consumption documents, including the endpoints map, model catalog, and tool integration.
-- `records/` — version-controlled outcome, incident, and handoff records.
-- `tools/` — tool-specific rules (`aider-rules.md` for Aider only).
-- `sources/models/` — imported reference material from `~/models/` (install script, machine configs, benchmark notes).
-- `sources/config/` — example client configuration (DSH provider section, aider invocation).
-- `dataflow.in/endpoints/` — captured `/v1/models` responses from the live routers (live-state input, versioned).
-- `scripts/` — project scripts, including `endpoints-capture.sh` and the test runner.
-- `tests/` — tests and validation code.
-- `dataflow.out/` / `logs/` / `site.out/` — generated output (not version-controlled).
-- `Makefile` — drives tests (`make test`) and endpoint capture (`make capture`).
-
-## Live-State Discipline
-
-Live facts (model lists, contexts, ports) change; every document that reflects them carries a `verified <date>` marker, and the captured router responses in `dataflow.in/endpoints/` are the source of truth for the catalog.
-
-## History
-
-- Started 2026-08-26 from `00-project-skeleton` (homelab lessons incorporated).
-- Imports `~/models/` reference material into `sources/models/`.
-- Supersedes nothing; complements the `model-router` project, which owns router deployment.
+Do not resume work here. Open the homelab instead.
