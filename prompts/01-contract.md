@@ -44,7 +44,6 @@ This table records authority and precedence. What each file defines is described
 | `prompts/how-to-write-features.md` | conventions | when a feature file is written or validated |
 | `prompts/how-to-write-episodes.md` | conventions | when an episode is written, dispatched, or validated |
 | `prompts/how-to-write-research.md` | conventions | when a study series or a decision record is written |
-| `prompts/common/04-model-review-criteria.md` | conventions | when a model review study is written or compared |
 | `prompts/episodes/01-episode-template.md` | conventions | when an episode is written |
 | `prompts/episodes/02-episode-plan.md` | conventions | when work is planned |
 | `records/README.md` | conventions | when a record is written |

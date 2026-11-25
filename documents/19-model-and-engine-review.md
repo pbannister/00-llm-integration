@@ -3,7 +3,7 @@
 Status: reviewed 2026-11-24. Every number below was measured on that date on the
 named host; the command that produced it is given so a later session can repeat
 it. Claims that no measurement supports are marked `unverified`.
-Criteria: `prompts/common/04-model-review-criteria.md`.
+Criteria: `prompts/11-model-review-criteria.md`.
 
 ## Method
 

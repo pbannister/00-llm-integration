@@ -45,7 +45,7 @@ the studies do not change it.
 
 ### Proposed criteria file
 
-`prompts/common/04-model-review-criteria.md`, covering for each candidate:
+`prompts/11-model-review-criteria.md`, covering for each candidate:
 
 - Role: interactive chat, agent loop, inline completion, long-context, small
   direct-use, speech, or vision.
@@ -104,7 +104,7 @@ rather than assume one.
 
 ## Deliverables
 
-1. `prompts/common/04-model-review-criteria.md` — the criteria file.
+1. `prompts/11-model-review-criteria.md` — the criteria file.
 2. One study note per candidate under `documents/`.
 3. A synthesis that pools the studies into a use list and an avoid list, and
    recommends what to drop.
