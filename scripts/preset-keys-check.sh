@@ -16,10 +16,16 @@ BINARY=${1:-/usr/local/bin/llama-server}
 CONFIG=${2:-/usr/local/etc/config.ini}
 
 HELP=$("$BINARY" --help 2>&1 || true)
-STATUS=0
 
 printf '%s\n' "$CONFIG" | grep -q . || exit 2
 echo "preset-keys-check: $CONFIG against $BINARY"
+
+# A BAD key must fail the check: llama.cpp refuses to start the router on an
+# unknown preset key, so a silent pass here would let the installer restart a
+# service that cannot load. The count is collected in a file because the
+# pipeline below runs in a subshell and cannot set a variable.
+DIRECTORY_TEMP=$(mktemp -d)
+trap 'rm -rf "$DIRECTORY_TEMP"' EXIT INT TERM
 
 grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$CONFIG" | while IFS= read -r LINE; do
     case "$LINE" in
@@ -31,10 +37,17 @@ grep -vE '^[[:space:]]*#|^[[:space:]]*$' "$CONFIG" | while IFS= read -r LINE; do
                 echo "  ok   $KEY = $VALUE"
             else
                 echo "  BAD  $KEY = $VALUE"
+                printf 'x\n' >> "$DIRECTORY_TEMP/bad"
             fi
             ;;
     esac
 done
 
-echo "preset-keys-check: review any BAD keys before restarting the service"
+if [ -s "$DIRECTORY_TEMP/bad" ]; then
+    count_bad=$(wc -l < "$DIRECTORY_TEMP/bad" | tr -d ' ')
+    echo "preset-keys-check: $count_bad BAD key(s); the router would refuse to start" >&2
+    exit 1
+fi
+
+echo "preset-keys-check: ok (every key is a known llama-server option)"
 exit 0

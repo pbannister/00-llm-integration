@@ -21,6 +21,9 @@ for FILE in README.md TODO.md Makefile package.json \
     prompts/features/00-features.md prompts/tasks/00-tasks.md \
     documents/07-endpoints-map.md documents/08-model-catalog.md \
     tools/aider-rules.md scripts/tests-run.sh scripts/endpoints-capture.sh \
+    scripts/llama-service-install.sh scripts/preset-keys-check.sh \
+    scripts/backup-models.sh scripts/kokoro-tts.sh \
+    sources/models/config-beast.ini sources/models/config-athena.ini \
     sources/config/dsh-settings-beast.example.yaml; do
     if [ ! -f "$REPOSITORY_ROOT/$FILE" ]; then
         echo "00-repository: missing file $FILE" >&2

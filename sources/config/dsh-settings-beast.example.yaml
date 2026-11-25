@@ -45,10 +45,10 @@ llm-pi-ai:
         - id: gemma-26b
           contextWindow: 81920
           maxTokens: 16384
-        # --- Flagship (GPU-fit: ~14 of 111 GiB on the MI25) ---
-        - id: qwen38
-          contextWindow: 16384
-          maxTokens: 8192
+        # qwen38 was removed from the router 2026-11-24: policy has never
+        # approved it (111 GiB, cannot fit the MI25; worse than CPU-only).
+        # Listing it here invited clients to select a model the policy does
+        # not recommend and that paid a ~18 s load per request.
     beast-cpu:
       displayName: Beast CPU (llama.cpp :2002)
       apiKeyEnv: BEAST_API_KEY
@@ -72,18 +72,21 @@ llm-pi-ai:
         maxTokensField: max_tokens
       models:
         # --- GPU-resident small models (this desktop; lowest latency) ---
+        # 2026-11-24: the router moved from parallel=4 to parallel=1 and its
+        # default ctx from 8192 to 16384, so each request now gets the whole
+        # context instead of a 2048-token quarter.
         - id: coder15
-          contextWindow: 8192
-          maxTokens: 4096
+          contextWindow: 16384
+          maxTokens: 8192
         - id: coder3
-          contextWindow: 8192
-          maxTokens: 4096
+          contextWindow: 16384
+          maxTokens: 8192
         - id: llama3
-          contextWindow: 8192
-          maxTokens: 4096
+          contextWindow: 16384
+          maxTokens: 8192
         - id: gemma-e4
-          contextWindow: 8192
-          maxTokens: 4096
+          contextWindow: 16384
+          maxTokens: 8192
         # --- CPU fallback (beast offline) ---
         - id: coder32-fallback
           contextWindow: 16384

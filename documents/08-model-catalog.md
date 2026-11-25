@@ -1,6 +1,6 @@
-# Model Catalog — verified 2026-09-25
+# Model Catalog — verified 2026-11-24
 
-Derived from the router captures `dataflow.in/endpoints/beast-models.json` (6 models), `beast-cpu-models.json` (1 model) and `athena-models.json` (16 models), captured 2026-09-25.
+Derived from the router captures `dataflow.in/endpoints/beast-models.json` (5 models), `beast-cpu-models.json` (1 model) and `athena-models.json` (15 models), captured 2026-11-24. The beast GPU router dropped `qwen38` and the athena router moved to `parallel = 1` at 16384 on 2026-11-24.
 `ctx` is the preset `ctx-size`, which is the per-slot context (see Notes).
 The full lists live in the captures; this document records the curated entries that have execution roles.
 
@@ -24,7 +24,7 @@ A preset section key and the router's reported model id can differ.
 | `unsloth/gpt-oss-20b-GGUF:Q4_K_XL` | `gpt-oss-20b` | 32768 | agent and tool calls (parsed `tool_calls` verified 2026-09-25); the MI25 agent model |
 | `unsloth/gemma-4-12B-it-qat-GGUF:Q4_K_XL` | `gemma-12b` | 32768 | general 12B |
 | `unsloth/gemma-4-26B-A4B-it-qat-GGUF:Q4_K_XL` | `gemma-26b` | 81920 | very large context; KV cache spills to CPU |
-| `batiai/Qwen3.8-Flash-Next-GGUF:Q4_K_M` | `qwen38` | 16384 | present but not recommended; see the 2026-09-21 MI25 benchmark |
+| `batiai/Qwen3.8-Flash-Next-GGUF:Q4_K_M` | `qwen38` | 16384 | removed from the router 2026-11-24; never policy-approved, see the 2026-09-21 MI25 benchmark |
 
 `coder14` does not emit parsed tool calls: it returns a `<tools>` text block, so it is chat-only.
 
@@ -36,7 +36,7 @@ A preset section key and the router's reported model id can differ.
 
 ## Athena (RX 5500 XT 8 GB GPU + Ryzen 9 5900X 128 GB CPU)
 
-The athena router runs `parallel = 4`, so each request gets a quarter of the preset context (2048 tokens at the 8192 default).
+The athena router runs `parallel = 1` at a 16384 default since 2026-11-24, so each request gets the whole preset context. Until then it ran `parallel = 4` at 8192, which gave 2048 tokens per request.
 
 ### GPU-resident (`ngl 99`) — fast, small
 
@@ -58,7 +58,7 @@ The athena router runs `parallel = 4`, so each request gets a quarter of the pre
 | Model id | alias | ctx | Role |
 | ---- | ---- | ---- | ---- |
 | `Qwen/Qwen2.5-Coder-32B-Instruct-GGUF:Q4_K_M` | `coder32-fallback` | 16384 | editing fallback on 128 GB RAM |
-| `unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_XL` | `r1-32b-fallback` | 16384 | reasoning fallback |
+| `unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_M` | `r1-32b-fallback` | 16384 | reasoning fallback. The key named `UD-Q4_K_XL` until 2026-11-24 while the cache held only `Q4_K_M`, so the child server failed to load |
 
 ### Special-purpose and cache entries
 
@@ -72,7 +72,7 @@ The embedding preset serves RAG; the remaining entries are cache entries with no
 | `unsloth/gemma-4-E2B-it-qat-GGUF:Q4_K_XL` | — | 8192 | minerva travel candidate |
 | `unsloth/Qwen3.5-9B-GGUF:Q4_K_M` | — | 8192 | athena copy of the beast `qwen9` model; no preset role |
 | `Qwen/Qwen2.5-Coder-1.5B-Instruct-GGUF:Q4_K_M`, `Qwen/Qwen2.5-Coder-3B-Instruct-GGUF:Q4_K_M` | — | 8192 | lighter quants of the two athena coders; kept as fallbacks |
-| `unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_M` | — | 8192 | duplicate quant of `r1-32b-fallback` |
+| `unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF:Q4_K_XL` | — | 8192 | not on disk; the preset key named this quant until 2026-11-24, when the cache proved to hold only `Q4_K_M` |
 
 ## Removed from beast on 2026-09-03
 
@@ -89,6 +89,6 @@ Their weights do not fit the 16 GiB MI25, or a smaller model replaced them.
 ## Notes
 
 - Model ids are exactly as the routers report them; client configs must use these strings verbatim, or the alias.
-- `ctx` is the per-slot context: a preset's `ctx-size` divided by its router's `parallel`. Athena (`parallel = 4`) therefore serves 2048 tokens per request at its 8192 default; beast runs `parallel = 1`.
+- `ctx` is the per-slot context: a preset's `ctx-size` divided by its router's `parallel`. Every router runs `parallel = 1` since 2026-11-24, so each request gets the whole preset context; athena previously served 2048 tokens per request at its 8192 default.
 - Cache entries have no preset; their context comes from the router default, not a tuning decision.
 - Refresh this document from the captures whenever the routers change; see `prompts/tasks/02-capture-endpoint-facts.md`.

@@ -1,7 +1,7 @@
-# Endpoints Map — verified 2026-09-25
+# Endpoints Map — verified 2026-11-24
 
 Live-state facts captured from `GET /v1/models` on the routers.
-Captured responses: `dataflow.in/endpoints/beast-models.json` (6 models), `dataflow.in/endpoints/beast-cpu-models.json` (1 model), `dataflow.in/endpoints/athena-models.json` (16 models).
+Captured responses: `dataflow.in/endpoints/beast-models.json` (5 models), `dataflow.in/endpoints/beast-cpu-models.json` (1 model), `dataflow.in/endpoints/athena-models.json` (15 models), captured 2026-11-24.
 
 ## Inference Hosts
 
@@ -17,7 +17,7 @@ Captured responses: `dataflow.in/endpoints/beast-models.json` (6 models), `dataf
 | ---- | ---- | ---- | ---- | ---- | ---- |
 | beast GPU router | `http://beast.lan:2001/v1` | `/usr/local/etc/config.ini` | 32768 | 1 | none (`--api-key` not set) |
 | beast CPU router | `http://beast.lan:2002/v1` | `/usr/local/etc/config-cpu.ini` | 65536 | 1 | none |
-| athena router | `http://athena.lan:2001/v1` | `/usr/local/etc/config.ini` | 8192 | 4 | none |
+| athena router | `http://athena.lan:2001/v1` | `/usr/local/etc/config.ini` | 16384 | 1 | none |
 | llama.vscode FIM server | `http://127.0.0.1:8012` (athena) | started by the extension | 8192 | 1 | none |
 
 The FIM server is a single-model `llama-server`, not a router.
@@ -44,4 +44,4 @@ Router mode runs one child server per active model.
 A CPU-heavy model (for example `gpt-oss-120b` on `:2002`) and a GPU model on `:2001` can be active concurrently, which is the basis of the routing policy in `documents/10-routing-policy.md`.
 The beast GPU router runs `--models-max 1`, so two different GPU models evict each other; the CPU router coexists freely.
 Each child serves one request at a time unless `parallel` is set in the preset.
-Context is per slot: a preset's `ctx-size` is divided by the router's `parallel`, so the athena default is 2048 tokens per request.
+Context is per slot: a preset's `ctx-size` is divided by the router's `parallel`. Every router now runs `parallel = 1`, so each request gets the whole preset context. The athena router ran `parallel = 4` at 8192 until 2026-11-24, which gave 2048 tokens per request and failed longer editor and agent requests.

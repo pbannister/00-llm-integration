@@ -1,4 +1,4 @@
-# Routing Policy — verified 2026-09-25
+# Routing Policy — verified 2026-11-24
 
 The policy for assigning work to the local models.
 It exists because the two execution classes compete for nothing: a CPU-heavy model on beast runs in system RAM while the MI25 serves a GPU model concurrently.
@@ -17,11 +17,11 @@ Since 2026-09-03 these are **separate routers**: `llama.service` (GPU presets, p
 
 - Small, light, latency-sensitive work stays on the local athena GPU: `coder3` and `coder15` for completion, `llama3` and `gemma-e4` for small chat.
 - Interactive and agent work on beast uses the MI25: `coder14` for chat and `gpt-oss-20b` for agent and tool calls; `qwen9`, `gemma-12b` and `gemma-26b` cover general and large-context chat.
-- Only models that emit parsed `tool_calls` belong in an agent loop. Verified 2026-09-25: `gpt-oss-20b`, `gpt-oss-120b`, `gemma-e4` and `llama3` do; `coder14` does not (it returns a `<tools>` text block).
+- Only models that emit parsed `tool_calls` belong in an agent loop. Verified 2026-11-24 against the live routers: `gpt-oss-20b`, `gpt-oss-120b`, `gemma-12b`, `gemma-e4`, `qwen9` and `llama3` do; `coder14` returns a `<tools>` text block and `coder3` returns a fenced JSON block. The 2026-09-25 check named only four and missed `gemma-12b` and `qwen9`.
 - Large or long-running background tasks go to `gpt-oss-120b` on beast's CPU. Response time is not a concern for these, and the MI25 stays free for interactive users.
 - Reasoning presets were removed from beast 2026-09-03; athena's `r1-32b-fallback` remains for beast-offline reasoning.
 - Athena's CPU fallbacks (`coder32-fallback`, `r1-32b-fallback`) serve only when beast is unreachable; the desktop GPU (8 GB) cannot hold the larger models.
-- `qwen38` remains listed on the beast GPU router but is not policy-approved: at 111 GiB it cannot fit, and every measured offload configuration was worse than CPU-only (see `records/2026-09-21-01-mi25-inference-benchmarks.md`).
+- `qwen38` was removed from the beast GPU router on 2026-11-24. It was never policy-approved: at 111 GiB it cannot fit, and every measured offload configuration was worse than CPU-only (see `records/2026-09-21-01-mi25-inference-benchmarks.md`). Leaving it listed only invited clients to select it and pay a ~18 s load for a model the policy does not recommend.
 - Do not run the 120B and interactive GPU work on the same session's critical path; schedule background batches so they do not starve interactive latency on the shared memory bus.
 
 ## Tool Tiering
@@ -39,7 +39,7 @@ The three llama.vscode tiers are the visible form of this policy, and DSH and ai
 - Router mode runs one child server per active model, so a CPU model and a GPU model run concurrently by default.
 - The beast GPU router runs `parallel = 1`: one conversation gets the full context, and `--models-max 1` means two different GPU models evict each other. Keep the GPU tier to one model per working session.
 - The CPU router also runs `parallel = 1`, with a 65536 context, so a single long conversation is not divided.
-- The athena router runs `parallel = 4`: its 8192 default context becomes 2048 tokens per request. It is sized for FIM, not chat.
+- The athena router runs `parallel = 1` with a 16384 default context since 2026-11-24. It previously ran `parallel = 4` at 8192, which gave each request 2048 tokens and failed any longer editor or agent request with `exceeds the available context size`; FIM runs on its own single-model server on :8012, so the router does not need to reserve slots for it.
 - The 120B on CPU still contends with GPU models for memory bandwidth; the policy above keeps their workloads disjoint in time where it matters.
 
 ## Router split and VRAM guard (2026-09-03)
@@ -47,6 +47,7 @@ The three llama.vscode tiers are the visible form of this policy, and DSH and ai
 - GPU router `llama.service` on :2001 runs `--models-max 1`: exactly one GPU-resident model at a time; requesting another evicts the current one (verified: qwen38 evicted when gemma-26b loaded).
 - CPU router `llama-cpu.service` on :2002 (gpt-oss-120b) coexists freely.
 - Isolation is enforced by scoped HF caches per router (`~/.cache/hf-gpu`, `~/.cache/hf-cpu`, symlinked model dirs) because llama.cpp has no VRAM-aware scheduler and the `--models-preset-only` flag is not merged upstream (ggml-org/llama.cpp PR #24434).
+- **The preset does not control the advertised model list.** The router also scans its `HF_HUB_CACHE` directory and advertises every model there with `source: cache`, alongside the preset's `source: preset` entries. Verified 2026-11-24 on beast: removing `qwen38` from `config.ini` left the router advertising it, because the weights were still linked into `~/.cache/hf-gpu/hub`. Moving that one symlink out of the scoped cache dropped the router to five models; restoring the link brought it back. So to remove a model from a router, remove its symlink from that router's scoped cache (the weights stay in the shared cache), not just its preset section.
 
 ## DSH Defaults
 

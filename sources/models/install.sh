@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# NOTE: the supported path for beast and athena is `make llama-service`, which
+# installs the archives in sources/config/*.applied.ini (the current preset set).
+# This script reads ${MODEL_HOME}/config-$(hostname).ini, a $HOME/models copy that
+# is stale on beast, and the config-*.ini files beside it are the 2026-08-26
+# reference only, so use this script only as a pattern for a new host.
 SERVICE_NAME=${SERVICE_NAME-"llama.service"}
 LISTEN_ADDRESS=${LISTEN_ADDRESS-0.0.0.0}
 LISTEN_PORT=${LISTEN_PORT-2001}

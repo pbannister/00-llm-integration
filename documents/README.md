@@ -21,6 +21,10 @@ The LLM does not load these files as project rules.
 - `12-model-retention.md` — model retention analysis (discard executed 2026-08-26; current preset set noted 2026-09-25).
 - `13-mtp-and-rag.md` — MTP and RAG explainers with local support.
 - `14-service-tuning-recommendations.md` — llama.cpp preset tuning applied 2026-08-26, with the current preset set noted 2026-09-25.
+- `15-model-and-engine-review-plan.md` — plan for reviewing models, engines, and whether to run engines other than llama.cpp.
+- `16-specialized-model-sets-plan.md` — plan for direct-use small models, speech models, and webcam vision models.
+- `17-homelab-migration-plan.md` — plan for incorporating this project into the homelab and using Ansible for deployment.
+- `18-voice-and-speech-models.md` — the single place recording which speech-to-text and text-to-speech models to use, with measured laptop results (verified 2026-11-24).
 
 ## Canonical Files
 

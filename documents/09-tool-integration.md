@@ -1,4 +1,4 @@
-# Tool Integration — verified 2026-09-25
+# Tool Integration — verified 2026-11-24
 
 How the local routers are consumed from the desktop tools.
 Model ids and contexts come from `documents/08-model-catalog.md`; this document does not restate the catalog.
@@ -28,14 +28,14 @@ Rules:
 - Use `--edit-format whole`; `diff` formats are unreliable on local models.
 - Editing sessions use the GPU-resident coder (`coder14`); the 120B is the CPU planner and batch model, and it is slow.
 - Architect mode pairs a planner with an editor, but aider applies one `--openai-api-base` per run, so the planner and editor must share a router. `--model gpt-oss-120b --editor-model gpt-oss-120b --architect` against `:2002` plans and edits with the 120B; a coder-edited plan needs its own session against `:2001`.
-- Tool use is not needed for aider edits, but if it is used, only the gpt-oss and gemma models emit parsed `tool_calls`; `coder14` does not.
+- Tool use is not needed for aider edits, but if it is used, only the models in the parsed-tool-call list emit `tool_calls`; `coder14` returns a `<tools>` text block and `coder3` returns a fenced JSON block.
 - Do not put R1-distill models in the agent loop; they follow tool schemas poorly.
 - Keep sessions short: aider holds the whole conversation in context, and `coder14` has 16384 context.
-- Athena variant for ultra-low-latency small work: same invocation with `--openai-api-base http://athena.lan:2001/v1` and `--model coder3`. Remember its 8192 context is divided over four slots.
+- Athena variant for ultra-low-latency small work: same invocation with `--openai-api-base http://athena.lan:2001/v1` and `--model coder3`. The router serves one full 16384-token context per request since 2026-11-24.
 
 ## llama.vscode
 
-The official llama.cpp extension (`ggml-org.llama-vscode`, version 0.0.67 installed on athena) provides inline completion, chat, an agent, embeddings, and tool selection, and can use a remote llama.cpp server.
+The official llama.cpp extension (`ggml-org.llama-vscode`, version 0.0.79 installed on athena) provides inline completion, chat, an agent, embeddings, and tool selection, and can use a remote llama.cpp server.
 
 `localStartCommand` is optional per model entry: an entry carrying only `endpoint` and `aiModel` is contacted over HTTP, and an entry carrying a command makes the extension start and stop that server itself.
 Chat, tools and embeddings run against the routers, but inline completion needs a server of its own:
@@ -62,7 +62,7 @@ A multi-model llama.cpp router rejects a model-less request.
 
 Both rows verified 2026-09-26 against athena's router and a throwaway single-model server.
 The completion entries therefore carry a `localStartCommand` that starts a single-model server on `127.0.0.1:8012`; the extension launches it when the model is selected and kills it on deselect.
-Two side benefits: the server reports the full preset context (8192, against 2048 per slot through the router's `parallel = 4`), and the model id comes back as the alias, so the extension's model-less priming request succeeds.
+Two side benefits: the server reports the full preset context, and the model id comes back as the alias, so the extension's model-less priming request succeeds.
 Chat and agent requests do carry `model`, so the routers serve those unchanged.
 
 ### VS Code Chat view and the llama-vscode provider
@@ -76,9 +76,9 @@ Two consequences:
 Facts that shape the mapping (verified 2026-09-25, router compatibility verified 2026-09-26):
 
 - `coder14` returns a `<tools>` text block rather than parsed tool calls, so it is not offered as a tools model.
-- `gpt-oss-20b`, `gpt-oss-120b`, `gemma-e4` and `llama3` all returned parsed `tool_calls`.
+- `gpt-oss-20b`, `gpt-oss-120b`, `gemma-12b`, `gemma-e4`, `qwen9` and `llama3` all returned parsed `tool_calls` (verified 2026-11-24); `coder14` and `coder3` did not.
 - The beast GPU router runs `--models-max 1`; asking it for two different models makes them evict each other, which the tiered env avoids by putting the agent model on the CPU router.
-- The athena router's `parallel = 4` divides its 8192 context into 2048 tokens per request, which is why athena serves completion from its own single-model server rather than from the router.
+- Athena serves completion from its own single-model server rather than from the router because the extension's model-less priming call is rejected by a multi-model router. The router's former `parallel = 4` also split its 8192 context into 2048 tokens per request; since 2026-11-24 the router runs `parallel = 1` at 16384, so that split no longer applies.
 
 Do not include `/v1` in the extension's `endpoint` value; it appends `/infill` and `/v1/chat/completions` itself.
 Inline completion requires a FIM-capable model; the Qwen2.5-Coder family is the right one in this catalog.
@@ -116,5 +116,5 @@ Do not run overlapping agent UIs on the same project simultaneously; pick one su
 
 ## Version-Dependent versus Stable Facts
 
-- **Version-dependent** (recheck on tool upgrades): aider flags and version (checked 0.86.2 on 2026-08-26); llama.vscode capabilities and version (checked 0.0.67 on 2026-09-25); Copilot extension ids/versions; `--edit-format` behavior on local models.
+- **Version-dependent** (recheck on tool upgrades): aider flags and version (checked 0.86.2 on 2026-08-26); llama.vscode capabilities and version (checked 0.0.79 on 2026-11-24); Copilot extension ids/versions; `--edit-format` behavior on local models.
 - **Stable (live-state, verified 2026-09-25)**: router endpoints and aliases (`http://beast.lan:2001/v1`, `http://beast.lan:2002/v1`, `http://athena.lan:2001/v1`), model roles from `documents/08-model-catalog.md`, the routing policy (`documents/10-routing-policy.md`).

@@ -21,6 +21,32 @@ For the current preset set see `documents/08-model-catalog.md` and the dated upd
   the host that has it (or restored from `/backups/huggingface/`), never
   downloaded twice from the web.
 
+### Running the backup (verified 2026-11-24)
+
+`make backup-models` (or `sh scripts/backup-models.sh [HOST|all] [--dry-run]`)
+copies each host's live cache into its own `/backups/huggingface/hub/`. The copy
+is additive: `rsync` never deletes from the archive, so a model dropped from the
+live cache stays backed up. A host with no `/backups` volume is skipped, not
+failed.
+
+State at 2026-11-24 after the first run: athena 28 models / 420 G in the
+archive (15 live), beast 28 models / 520 G (8 live, plus the laptop's models).
+The `batiai/Qwen3.8-27B` model that was live on athena and absent from its
+backup was copied as part of this run.
+
+`/backups` is **not shared between hosts**: beast's `vg2-backups` is 2.0 T and
+athena's is 6.0 T, despite the identical mount name. Each server archives its
+own cache; there is no cross-host copy between the servers.
+
+### The laptop archives to beast (owner, 2026-11-24)
+
+`minerva` has a single 935 GB volume and no `/backups`. Its model cache is
+archived on **beast** while the two are on the same subnet: the source host
+runs the `rsync` and reaches beast over SSH with its own `key-beast`. A run with
+beast unreachable skips and reports it; it does not fall back to a local
+archive. Verified 2026-11-24: minerva's 8 models copied to
+`beast.lan:/backups/huggingface/hub/`, which grew to 28 models / 520 G.
+
 ## Discard executed 2026-08-26
 
 The owner approved the discard on 2026-08-26; the files below marked "Discard candidates" were deleted from the HuggingFace cache on beast and athena by `scripts/cache-discard.sh`.
@@ -123,7 +149,7 @@ Notes: the 120B at 8.42 t/s on CPU versus 0.91 t/s for the 70B models is the sig
 
 ## Update 2026-09-03 — qwen27 re-promoted on athena
 
-`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` (discard candidate 2026-08-26: "none fits the GPU, CPU-only and slow") is re-promoted as the athena `qwen27` preset — athena's GPU was fixed (`records/2026-09-03-01-athena-gpu-fixes-qwen27-llamacpp-current.md`), making an 8 GB-VRAM GPU + CPU split viable. **Correction 2026-09-03** (`records/2026-09-03-02-athena-qwen27-load-fixes.md`): the preset resolves the **batiai** repo; the `/backups/huggingface/` copy is `bartowski` (a different repo — the backup stays archive-only and the batiai files were web-downloaded). It remains a discard candidate on beast (beast's Qwen3.8 role is the `qwen38` Flash-Next CPU preset, which has no backup anywhere and needs a first-time ~119 G download).
+`bartowski/Qwen3.8-27B-GGUF:Q4_K_M` (discard candidate 2026-08-26: "none fits the GPU, CPU-only and slow") is re-promoted as the athena `qwen27` preset — athena's GPU was fixed (`records/2026-09-03-01-athena-gpu-fixes-qwen27-llamacpp-current.md`), making an 8 GB-VRAM GPU + CPU split viable. **Correction 2026-09-03** (`records/2026-09-03-02-athena-qwen27-load-fixes.md`): the preset resolves the **batiai** repo; the `/backups/huggingface/` copy is `bartowski` (a different repo — the backup stays archive-only and the batiai files were web-downloaded). It remains a discard candidate on beast. Correction 2026-11-24: `qwen38` was first added as a CPU preset (`ngl = 0`, `numa = distribute`) on `llama.service` :2001's `config.ini` on 2026-09-02 (`records/2026-09-02-02-llamacpp-rebuild-qwen38.md`); the 2026-09-03 split moved the CPU-heavy model to a separate `llama-cpu.service` and the tracked preset became a GPU-fit section. Either way it stayed on the GPU router's `config.ini`, and it was removed from that preset on 2026-11-24 because policy never approved it. Correction 2026-11-24: the Flash-Next weights are already on disk in beast's shared cache (three `Q4_K_M` shards, 111 GB apparent), so no download is needed to re-add it; the earlier text said they had no backup anywhere. The 111 GB is the largest single consumer in the 220 GB cache and the largest argument for dropping it, given the policy verdict.
 
 ## Update 2026-09-25 — current preset set
 
@@ -132,7 +158,7 @@ The current preset set, verified against the refreshed captures on 2026-09-25, i
 
 | Host / router | Presets |
 | ---- | ---- |
-| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b`, `qwen38` |
+| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b` (`qwen38` removed 2026-11-24) |
 | beast `llama-cpu.service` :2002 (CPU) | `gpt-oss-120b` |
 | athena :2001 | `coder3`, `coder15`, `llama3`, `gemma-e4`, `qwen27`, `nomic-embed`, `coder32-fallback`, `r1-32b-fallback` |
 

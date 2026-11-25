@@ -130,7 +130,7 @@ Current presets, verified 2026-09-25:
 
 | Host / router | Presets |
 | ---- | ---- |
-| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b`, `qwen38` |
+| beast `llama.service` :2001 (GPU) | `coder14`, `qwen9`, `gpt-oss-20b`, `gemma-12b`, `gemma-26b` (`qwen38` removed 2026-11-24) |
 | beast `llama-cpu.service` :2002 (CPU) | `gpt-oss-120b` |
 | athena :2001 | `coder3`, `coder15`, `llama3`, `gemma-e4`, `qwen27`, `nomic-embed`, `coder32-fallback`, `r1-32b-fallback` |
 
