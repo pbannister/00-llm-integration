@@ -186,7 +186,7 @@ for interactive chat. Nothing measured suggests a smaller model would replace it
 at a role it uniquely fills.
 
 **Which models should be in the cache but not in a preset?** None on athena:
-the seven cache-only models are client-facing. On beast the cache and the preset
+the eight cache-only models are client-facing. On beast the cache and the preset
 match. The recommendation is to make the cache and the preset agree on every
 host.
 
